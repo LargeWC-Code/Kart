@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<_xml_data Type='UCPluginSolution'> 
+	<Nodes Type='UCSolutionNode'> 
+		<Name Type='UCString'>server</Name> 
+		<ProjectName Type='UCString'/> 
+		<Childs Type='UCSolutionNodeMap'> 
+			<Size Type='int'>2</Size> 
+			<Key0 Type='UCString'>client</Key0> 
+			<Value0 Type='UCSolutionNode'> 
+				<Name Type='UCString'>client</Name> 
+				<ProjectName Type='UCString'/> 
+				<Childs Type='UCSolutionNodeMap'> 
+					<Size Type='int'>3</Size> 
+					<Key0 Type='UCString'>kart</Key0> 
+					<Value0 Type='UCSolutionNode'> 
+						<Name Type='UCString'>kart</Name> 
+						<ProjectName Type='UCString'>kart</ProjectName> 
+						<Childs Type='UCSolutionNodeMap'> 
+							<Size Type='int'>0</Size>
+						</Childs>
+					</Value0> 
+					<Key1 Type='UCString'>mx3dee</Key1> 
+					<Value1 Type='UCSolutionNode'> 
+						<Name Type='UCString'>mx3dee</Name> 
+						<ProjectName Type='UCString'>mx3dee</ProjectName> 
+						<Childs Type='UCSolutionNodeMap'> 
+							<Size Type='int'>0</Size>
+						</Childs>
+					</Value1> 
+					<Key2 Type='UCString'>ucbaker</Key2> 
+					<Value2 Type='UCSolutionNode'> 
+						<Name Type='UCString'>ucbaker</Name> 
+						<ProjectName Type='UCString'>ucbaker</ProjectName> 
+						<Childs Type='UCSolutionNodeMap'> 
+							<Size Type='int'>0</Size>
+						</Childs>
+					</Value2>
+				</Childs>
+			</Value0> 
+			<Key1 Type='UCString'>container</Key1> 
+			<Value1 Type='UCSolutionNode'> 
+				<Name Type='UCString'>container</Name> 
+				<ProjectName Type='UCString'/> 
+				<Childs Type='UCSolutionNodeMap'> 
+					<Size Type='int'>2</Size> 
+					<Key0 Type='UCString'>private</Key0> 
+					<Value0 Type='UCSolutionNode'> 
+						<Name Type='UCString'>private</Name> 
+						<ProjectName Type='UCString'/> 
+						<Childs Type='UCSolutionNodeMap'> 
+							<Size Type='int'>1</Size> 
+							<Key0 Type='UCString'>local</Key0> 
+							<Value0 Type='UCSolutionNode'> 
+								<Name Type='UCString'>local</Name> 
+								<ProjectName Type='UCString'/> 
+								<Childs Type='UCSolutionNodeMap'> 
+									<Size Type='int'>3</Size> 
+									<Key0 Type='UCString'>home</Key0> 
+									<Value0 Type='UCSolutionNode'> 
+										<Name Type='UCString'>home</Name> 
+										<ProjectName Type='UCString'>home</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value0> 
+									<Key1 Type='UCString'>logic</Key1> 
+									<Value1 Type='UCSolutionNode'> 
+										<Name Type='UCString'>logic</Name> 
+										<ProjectName Type='UCString'>logic</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value1> 
+									<Key2 Type='UCString'>match</Key2> 
+									<Value2 Type='UCSolutionNode'> 
+										<Name Type='UCString'>match</Name> 
+										<ProjectName Type='UCString'>match</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value2>
+								</Childs>
+							</Value0>
+						</Childs>
+					</Value0> 
+					<Key1 Type='UCString'>public</Key1> 
+					<Value1 Type='UCSolutionNode'> 
+						<Name Type='UCString'>public</Name> 
+						<ProjectName Type='UCString'/> 
+						<Childs Type='UCSolutionNodeMap'> 
+							<Size Type='int'>2</Size> 
+							<Key0 Type='UCString'>local</Key0> 
+							<Value0 Type='UCSolutionNode'> 
+								<Name Type='UCString'>local</Name> 
+								<ProjectName Type='UCString'/> 
+								<Childs Type='UCSolutionNodeMap'> 
+									<Size Type='int'>2</Size> 
+									<Key0 Type='UCString'>data</Key0> 
+									<Value0 Type='UCSolutionNode'> 
+										<Name Type='UCString'>data</Name> 
+										<ProjectName Type='UCString'>data</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value0> 
+									<Key1 Type='UCString'>gate</Key1> 
+									<Value1 Type='UCSolutionNode'> 
+										<Name Type='UCString'>gate</Name> 
+										<ProjectName Type='UCString'>gate</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value1>
+								</Childs>
+							</Value0> 
+							<Key1 Type='UCString'>remote</Key1> 
+							<Value1 Type='UCSolutionNode'> 
+								<Name Type='UCString'>remote</Name> 
+								<ProjectName Type='UCString'/> 
+								<Childs Type='UCSolutionNodeMap'> 
+									<Size Type='int'>3</Size> 
+									<Key0 Type='UCString'>account</Key0> 
+									<Value0 Type='UCSolutionNode'> 
+										<Name Type='UCString'>account</Name> 
+										<ProjectName Type='UCString'>account</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value0> 
+									<Key1 Type='UCString'>accountdata</Key1> 
+									<Value1 Type='UCSolutionNode'> 
+										<Name Type='UCString'>accountdata</Name> 
+										<ProjectName Type='UCString'>accountdata</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value1> 
+									<Key2 Type='UCString'>center</Key2> 
+									<Value2 Type='UCSolutionNode'> 
+										<Name Type='UCString'>center</Name> 
+										<ProjectName Type='UCString'>center</ProjectName> 
+										<Childs Type='UCSolutionNodeMap'> 
+											<Size Type='int'>0</Size>
+										</Childs>
+									</Value2>
+								</Childs>
+							</Value1>
+						</Childs>
+					</Value1>
+				</Childs>
+			</Value1>
+		</Childs>
+	</Nodes> 
+	<Name Type='UCString'>server</Name> 
+	<OptionName Type='UCString'>magic3d debug</OptionName> 
+	<Options Type='UCPluginOptionMap'> 
+		<Key0 Type='UCString'>magic3d debug</Key0> 
+		<Value0 Type='UCSolutionOptionMap'> 
+			<Key0 Type='UCString'>account</Key0> 
+			<Value0 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>account</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value0> 
+			<Key1 Type='UCString'>accountdata</Key1> 
+			<Value1 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>accountdata</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value1> 
+			<Key2 Type='UCString'>center</Key2> 
+			<Value2 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>center</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value2> 
+			<Key3 Type='UCString'>data</Key3> 
+			<Value3 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>data</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value3> 
+			<Key4 Type='UCString'>gate</Key4> 
+			<Value4 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>gate</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value4> 
+			<Key5 Type='UCString'>home</Key5> 
+			<Value5 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>home</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value5> 
+			<Key6 Type='UCString'>kart</Key6> 
+			<Value6 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>kart</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value6> 
+			<Key7 Type='UCString'>logic</Key7> 
+			<Value7 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>logic</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value7> 
+			<Key8 Type='UCString'>match</Key8> 
+			<Value8 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>match</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value8> 
+			<Key9 Type='UCString'>mx3dee</Key9> 
+			<Value9 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>mx3dee</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value9> 
+			<Key10 Type='UCString'>ucbaker</Key10> 
+			<Value10 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d debug</Name> 
+				<ProjectName Type='UCString'>ucbaker</ProjectName> 
+				<OptionName Type='UCString'>magic3d debug</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value10>
+			11
+		</Value0> 
+		<Key1 Type='UCString'>magic3d release</Key1> 
+		<Value1 Type='UCSolutionOptionMap'> 
+			<Key0 Type='UCString'>account</Key0> 
+			<Value0 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>account</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value0> 
+			<Key1 Type='UCString'>accountdata</Key1> 
+			<Value1 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>accountdata</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value1> 
+			<Key2 Type='UCString'>center</Key2> 
+			<Value2 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>center</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value2> 
+			<Key3 Type='UCString'>data</Key3> 
+			<Value3 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>data</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value3> 
+			<Key4 Type='UCString'>gate</Key4> 
+			<Value4 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>gate</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value4> 
+			<Key5 Type='UCString'>home</Key5> 
+			<Value5 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>home</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value5> 
+			<Key6 Type='UCString'>kart</Key6> 
+			<Value6 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>kart</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value6> 
+			<Key7 Type='UCString'>logic</Key7> 
+			<Value7 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>logic</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value7> 
+			<Key8 Type='UCString'>match</Key8> 
+			<Value8 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>match</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value8> 
+			<Key9 Type='UCString'>mx3dee</Key9> 
+			<Value9 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>mx3dee</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value9> 
+			<Key10 Type='UCString'>ucbaker</Key10> 
+			<Value10 Type='UCSolutionOption'> 
+				<Name Type='UCString'>magic3d release</Name> 
+				<ProjectName Type='UCString'>ucbaker</ProjectName> 
+				<OptionName Type='UCString'>magic3d release</OptionName> 
+				<HasBuild Type='int'>1</HasBuild>
+			</Value10>
+			11
+		</Value1>
+		2
+	</Options> 
+	<StartupProject Type='UCString'>kart</StartupProject> 
+	<Size Type='int'>11</Size> 
+	<Name0 Type='UCString'>account</Name0> 
+	<Path0 Type='UCString'>container/public/remote/account/</Path0> 
+	<Name1 Type='UCString'>accountdata</Name1> 
+	<Path1 Type='UCString'>container/public/remote/accountdata/</Path1> 
+	<Name2 Type='UCString'>center</Name2> 
+	<Path2 Type='UCString'>container/public/remote/center/</Path2> 
+	<Name3 Type='UCString'>data</Name3> 
+	<Path3 Type='UCString'>container/public/local/data/</Path3> 
+	<Name4 Type='UCString'>gate</Name4> 
+	<Path4 Type='UCString'>container/public/local/gate/</Path4> 
+	<Name5 Type='UCString'>home</Name5> 
+	<Path5 Type='UCString'>container/private/local/home/</Path5> 
+	<Name6 Type='UCString'>kart</Name6> 
+	<Path6 Type='UCString'>../mx_client\kart\</Path6> 
+	<Name7 Type='UCString'>logic</Name7> 
+	<Path7 Type='UCString'>container/private/local/logic/</Path7> 
+	<Name8 Type='UCString'>match</Name8> 
+	<Path8 Type='UCString'>container/private/local/match/</Path8> 
+	<Name9 Type='UCString'>mx3dee</Name9> 
+	<Path9 Type='UCString'>../../../../tools\develop\mx3dee\mx3dee\mx3dee\</Path9> 
+	<Name10 Type='UCString'>ucbaker</Name10> 
+	<Path10 Type='UCString'>../../../../tools\develop\ucbaker\</Path10>
+</_xml_data>

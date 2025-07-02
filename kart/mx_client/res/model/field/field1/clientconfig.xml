@@ -1,0 +1,10 @@
+<?xml version='1.0'  encoding='gb2312' ?>
+	<_xml_data Type='UCClientConfig' >
+		<LoginServerIP Type='UCString' >10.0.0.62</LoginServerIP>
+		<LoginServerPort Type='int' >10009</LoginServerPort>
+		<BillBodyStr Type='UCString' >欢迎进入百洲游戏平台！</BillBodyStr>
+		<MachineEnable Type='int' >1</MachineEnable>
+		<SoundEnable Type='int' >1</SoundEnable>
+		<MusicEnable Type='int' >1</MusicEnable>
+		<VIMEnable Type='int' >0</VIMEnable>
+	</_xml_data>

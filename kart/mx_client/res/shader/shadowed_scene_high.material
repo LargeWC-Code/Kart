@@ -1,0 +1,16 @@
+class ScriptShadowedSceneHigh
+{
+public:
+	ScriptShadowedSceneHigh()
+	{
+		Material = GetCurrentMaterial();
+		Material->HardVS = 1;
+		Material->LoadEffectFromFile(UCString("res/shader/shadowed_scene_high"));
+	}
+	~ScriptShadowedSceneHigh()
+	{
+	}
+	UC3DMaterial* Material;
+};
+
+ScriptShadowedSceneHigh scriptShadowedSceneHigh;

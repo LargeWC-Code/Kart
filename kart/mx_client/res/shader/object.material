@@ -1,0 +1,16 @@
+class ScriptObject
+{
+public:
+	ScriptObject()
+	{
+		Material = GetCurrentMaterial();
+		Material->HardVS = 1;
+		Material->LoadEffectFromFile(UCString("res/shader/object"));
+	}
+	~ScriptObject()
+	{
+	}
+	UC3DMaterial* Material;
+};
+
+ScriptObject scriptObject;

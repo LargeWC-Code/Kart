@@ -1,0 +1,20 @@
+class ScriptShadowedObject
+{
+public:
+	ScriptShadowedObject()
+	{
+		Material = GetCurrentMaterial();
+		Material->HardVS = 1;
+		Material->LoadEffectFromFile(UCString("res/shader/shadowed_object"));
+
+		ucFLOAT g_Bias = 0.0012f;
+		Material->SetScriptValue(UCString("g_Bias"), &g_Bias, typeof(g_Bias));
+	}
+
+	~ScriptShadowedObject()
+	{
+	}
+	UC3DMaterial* Material;
+};
+
+ScriptShadowedObject scriptShadowedObject;

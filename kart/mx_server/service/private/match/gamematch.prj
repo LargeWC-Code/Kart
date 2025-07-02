@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?> 
+<_xml_data Type='UCPluginProject'> 
+	<Type Type='UCString'>UCSharp</Type> 
+	<Root Type='UCProjectNode'> 
+		<Name Type='UCString'>gamematch</Name> 
+		<Path Type='UCString'/> 
+		<Type Type='int'>0</Type> 
+		<Childs Type='UCProjectNodeMap'> 
+			<Size Type='int'>2</Size> 
+			<Key0 Type='UCString'>cpp</Key0> 
+			<Value0 Type='UCProjectNode'> 
+				<Name Type='UCString'>cpp</Name> 
+				<Path Type='UCString'/> 
+				<Type Type='int'>0</Type> 
+				<Childs Type='UCProjectNodeMap'> 
+					<Size Type='int'>1</Size> 
+					<Key0 Type='UCString'>gamematch.cpp</Key0> 
+					<Value0 Type='UCProjectNode'> 
+						<Name Type='UCString'>gamematch.cpp</Name> 
+						<Path Type='UCString'>.\</Path> 
+						<Type Type='int'>0</Type> 
+						<Childs Type='UCProjectNodeMap'> 
+							<Size Type='int'>0</Size>
+						</Childs>
+					</Value0>
+				</Childs>
+			</Value0> 
+			<Key1 Type='UCString'>header</Key1> 
+			<Value1 Type='UCProjectNode'> 
+				<Name Type='UCString'>header</Name> 
+				<Path Type='UCString'/> 
+				<Type Type='int'>0</Type> 
+				<Childs Type='UCProjectNodeMap'> 
+					<Size Type='int'>1</Size> 
+					<Key0 Type='UCString'>gamematch.h</Key0> 
+					<Value0 Type='UCProjectNode'> 
+						<Name Type='UCString'>gamematch.h</Name> 
+						<Path Type='UCString'>.\</Path> 
+						<Type Type='int'>3</Type> 
+						<Childs Type='UCProjectNodeMap'> 
+							<Size Type='int'>0</Size>
+						</Childs>
+					</Value0>
+				</Childs>
+			</Value1>
+		</Childs>
+	</Root> 
+	<Options Type='UCProjectOptionMap'> 
+		<Key0 Type='UCString'>magic3d debug</Key0> 
+		<Value0 Type='UCProjectOption'> 
+			<Name Type='UCString'>magic3d debug</Name> 
+			<ObjectPath Type='UCString'>..\..\..\..\..\temp\mxwin\result\obj\gamematch\magic3d debug</ObjectPath> 
+			<OutputName Type='UCString'>..\..\..\..\..\runtime\mxwin\obb\gamematchd.obb</OutputName> 
+			<PerDefine Type='UCString'>_DEBUG;</PerDefine> 
+			<OutputDebugInfo Type='int'>3</OutputDebugInfo>
+		</Value0> 
+		<Key1 Type='UCString'>magic3d release</Key1> 
+		<Value1 Type='UCProjectOption'> 
+			<Name Type='UCString'>magic3d release</Name> 
+			<ObjectPath Type='UCString'>..\..\..\..\..\result\obj\gamematch\magic3d release</ObjectPath> 
+			<OutputName Type='UCString'>..\..\..\..\..\result\exe\gamematch.obb</OutputName> 
+			<PerDefine Type='UCString'>NDEBUG;</PerDefine> 
+			<OutputDebugInfo Type='int'>3</OutputDebugInfo>
+		</Value1>
+		2
+	</Options>
+</_xml_data>

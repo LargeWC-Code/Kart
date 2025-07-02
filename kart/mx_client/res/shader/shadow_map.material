@@ -1,0 +1,26 @@
+
+class ScriptShadowMap
+{
+public:
+	ScriptShadowMap()
+	{
+		Material = GetCurrentMaterial();
+		Material->HardVS = 1;
+		
+		UCDevice3D* pDevice3D = (UCDevice3D*)UIGetDevice();
+		UC3DDevice* pDevice   = pDevice3D->Get3DDevice();
+		
+		if(pDevice->GetData()->DeviceType==0)
+			Material->LoadEffectFromFile(UCString("res/shader/shadow_map.fx"));
+		else if(pDevice->GetData()->DeviceType==1)
+			Material->LoadEffectFromFile(UCString("res/shader/shadow_map"));
+		else
+		    ucTrace("Unkown DeviceType\r\n");
+	}
+	~ScriptShadowMap()
+	{
+	}
+	UC3DMaterial* Material;
+};
+
+ScriptShadowMap scriptShadowMap;
