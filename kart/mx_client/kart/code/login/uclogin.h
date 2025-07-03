@@ -15,6 +15,8 @@ public:
 	UCEvent					OnLoginSucceed;
 	UCEvent					OnRegister;
 
+	UCProString				SelectUrl;
+
 	UCGameUserID			GameUserID;
 	ucUINT64				Token;
 private:
@@ -46,6 +48,11 @@ public:
 
 		FiberTip.FiberEvent = UCEvent(this, OnFiberTip);
 		FiberTip.Start(0);
+
+		// 默认选择Azure
+		SelectUrl = UCString("wss://4.147.180.27:6800");
+		m_rbAzure.OnClick = UCEvent(this, OnAzureClick);
+		m_rbAWS.OnClick = UCEvent(this, OnAWSClick);
 	}
 	~UCLogin()	//析构函数
 	{
@@ -70,6 +77,8 @@ public:
 	ucVOID ShowUI()
 	{
 		UCTimeFiberData* FiberData = (UCTimeFiberData*)GetRunFiberData();
+
+		m_tbTip.Text = UCString();
 
 		Visible = ucTRUE;
 		Alpha = 0;
@@ -108,6 +117,16 @@ public:
 			OnLoginSucceed.Run(this, 0);
 		else
 			m_tbTip.Text = strRet;
+	}
+	// 选择Azure
+	ucVOID OnAzureClick(UCObject* Sender, UCEventArgs*)
+	{
+		SelectUrl = UCString("wss://www.largewc.org:6800");
+	}
+	// 选择AWS
+	ucVOID OnAWSClick(UCObject* Sender, UCEventArgs*)
+	{
+		SelectUrl = UCString("wss://www.largewc.ink:6800");
 	}
 };
 

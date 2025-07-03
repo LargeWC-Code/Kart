@@ -512,6 +512,23 @@ public:
 		OnRStructTimeOut(RObjGameUserData_Home, ucNULL);
 		return UCString("succeed");
 	}
+	// 服务器压力测试函数，CPU型，持续5分钟
+	UCString StressTest()
+	{
+		UCFiberData* FiberData = GetRunFiberData();
+
+		ucINT64 start = UCGetTickCount();
+		ucINT64 duration = 6 * 60 * 1000; // 6分钟，单位毫秒
+		ucINT64 dummy = 0;
+		while (UCGetTickCount() - start < duration)
+		{
+			// CPU密集型运算
+			for (ucINT i = 0; i < 2000; ++i)
+				dummy += i * i;
+			FiberData->Delay();
+		}
+		return UCString("stress test done");
+	}
 private:
 	UCRObjGameAccount* Refresh_RObjGameAccount(ucDWORD GameAccountID)
 	{
@@ -970,7 +987,7 @@ public:
 		UCGameHomeInfo* HomeInfo = GameHomeCfg.GetData();
 
 		UCGetSystemExt()->SetWindowCaption(App->Name);
-		//设置异常处理方法：0-默认弹窗提醒，1-忽略继续（可能会死循环或闪退），2-临时本次返回，3-本脚本以后始终返回（防止问题扩散）
+
 		SetExceptionMode(0);
 
 		FiberInit.Start(0);

@@ -84,7 +84,7 @@ public:
 		RContainer_NET.AppendClient(UCString("local//UCRObjGameUserData.obj"), typeof(UCRObjGameUserData), &RObjGameUserData);
 		RContainer_NET.AppendClient(UCString("local//UCRObjGameUserData_Ext.obj"), typeof(UCRObjGameUserData_Ext), &RObjGameUserData_Ext);		
 
-		GateUrl = UCString("wss://4.147.180.27:6800");
+		GateUrl = UCString("ws://127.0.0.1:6800");
 
 		m_pRegister = new UCRegister(&RObjGameHome);
 		m_pRegister->OnRegisterSucceed = UCEvent(this, OnRegisterSucceed);
@@ -95,9 +95,11 @@ public:
 		m_pLogin->Enable = 1;
 		m_pLogin->Visible = 1;
 		m_pLogin->OnLoginPrepare = UCEvent(this, OnLoginPrepare);
+		m_pLogin->SelectUrl.OnSet += UCEvent(this, OnLoginSelectUrl);
 
 		m_pHome = new UCHome(&RObjGameHome, &RObjGameMatch, &RObjGameBattle, &RObjGameUserData, &RObjGameUserData_Ext);
 		m_pHome->Enter();
+		m_pHome->OnLogout = UCEvent(this, OnLogout);
 		m_pHome->OnMatchSucceed = UCEvent(this, OnMatchSucceed);
 
 		m_pBattle = new UCBattle(&RObjGameBattle);
@@ -128,6 +130,10 @@ public:
 				return ucFALSE;
 		}
 		return ucTRUE;
+	}
+	ucVOID OnLoginSelectUrl(UCObject* Sender, UCEventArgs* e)
+	{
+		GateUrl = m_pLogin->SelectUrl.Value;
 	}
 	ucVOID OnLoginPrepare(UCObject* Sender, UCEventArgs* e)
 	{
@@ -224,6 +230,20 @@ public:
 			else
 				m_pHome->ShowUI(m_pLogin->GameUserID, GateUrl, m_pLogin->Token);
 		}
+	}
+	ucVOID OnLogout(UCObject*, UCEventArgs*)
+	{
+		RObjGameHome.Dislink();
+		RObjGameMatch.Dislink();
+
+		RObjGameBattle.Dislink();
+
+		RObjGameUserData.Dislink();
+		RObjGameUserData_Ext.Dislink();
+
+		RObjGameGate.Dislink();
+
+		m_pLogin->ShowUI();
 	}
 	ucVOID OnMatchSucceed(UCObject*, UCEventArgs*)
 	{

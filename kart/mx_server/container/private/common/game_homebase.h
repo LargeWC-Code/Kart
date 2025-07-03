@@ -115,6 +115,10 @@ public:
 	{
 		return UCString("local");
 	}
+	UCString	StressTest()
+	{
+		return UCString("local");
+	}
 
 // 	UCString	Activate(ucCONST UCGameUserID& GameUserID, ucCONST ucDWORD& AccountID, ucCONST ucDWORD& AccountKey, ucDWORD& HomeKey)
 // 	{

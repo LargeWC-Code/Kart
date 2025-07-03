@@ -19,6 +19,8 @@ public:
 	UCButton m_btUserManagement;
 	UCLabel m_lbNickname;
 	UCLabel m_lbVMoney;
+	UCButton m_btStressTest;
+	UCButton m_btLogout;
 public:
 	UCHome_UI()	//构造函数
 	{
@@ -163,6 +165,25 @@ public:
 			m_lbVMoney.Align = 2;
 		}
 
+		// 新增：压力测试按钮
+		{
+			m_btStressTest.UIName = "UCHome::m_btStressTest";
+			m_btStressTest.SetNewRealSize(180.0f, 48.0f);
+			m_btStressTest.RealLocation = UCFPoint(-40.0f, 180.0f);
+			m_btStressTest.Anchor = 6;
+			m_btStressTest.Font.Size = UCSize(16, 32);
+			m_btStressTest.Text = "Stress Test";
+		}
+		// 新增：注销按钮
+		{
+			m_btLogout.UIName = "UCHome::m_btLogout";
+			m_btLogout.SetNewRealSize(220.0f, 48.0f);
+			m_btLogout.RealLocation = UCFPoint(-24.0f, 24.0f + 48.0f + 16.0f);
+			m_btLogout.Anchor = 6;
+			m_btLogout.Font.Size = UCSize(16, 32);
+			m_btLogout.Text = "Logout";
+		}
+
 		//父子关系结构
 		{
 			this->AddControl(&m_btMatch);
@@ -174,6 +195,8 @@ public:
 			this->AddControl(&m_btUserManagement);
 			this->AddControl(&m_lbNickname);
 			this->AddControl(&m_lbVMoney);
+			this->AddControl(&m_btStressTest);
+			this->AddControl(&m_btLogout);
 		}
 	}
 	~UCHome_UI()	//析构函数

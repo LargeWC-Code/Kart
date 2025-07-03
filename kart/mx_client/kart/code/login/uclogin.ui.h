@@ -21,6 +21,8 @@ public:
 	UCTextBox m_tbPassword;
 	UCLabel m_tbTip;
 	UCTextBox m_tbUsername;
+	UCRadioButton m_rbAzure;
+	UCRadioButton m_rbAWS;
 public:
 	UCLogin_UI()	//构造函数
 	{
@@ -35,7 +37,7 @@ public:
 		//UCButton m_btRegister;
 		{
 			m_btRegister.UIName = "UCLogin::m_btRegister";
-			m_btRegister.Visible = 0;
+			m_btRegister.Visible = ucTRUE;
 			m_btRegister.SetNewRealSize(162.000000,66.000000);
 			m_btRegister.RealLocation = UCFPoint(185.000000,791.000000);
 			m_btRegister.Anchor = 0;
@@ -76,7 +78,7 @@ public:
 		{
 			m_lbKart.UIName = "UCLogin::m_lbKart";
 			m_lbKart.SetNewRealSize(540.000000,235.000000);
-			m_lbKart.RealLocation = UCFPoint(0.000000,350.000000);
+			m_lbKart.RealLocation = UCFPoint(0.000000,240.000000);
 			m_lbKart.Anchor = 0;
 			m_lbKart.Font.Weight = 900;
 			m_lbKart.Font.Decoration = 0x50;
@@ -176,10 +178,15 @@ public:
 		{
 			m_tbTip.UIName = "UCLogin::m_tbTip";
 			m_tbTip.SetNewRealSize(431.000000,70.000000);
-			m_tbTip.RealLocation = UCFPoint(49.000000,784.000000);
+			m_tbTip.RealLocation = UCFPoint(49.000000,424.000000);
 			m_tbTip.Anchor = 0;
 			m_tbTip.Font.Size = UCSize(16,32);
-			m_tbTip.FontColor.TextColor[UCDISPLAYMODE_DARK].Outline = 0xff000000;
+			m_tbTip.FontColor.TextColor[UCDISPLAYMODE_LIGHT].Text = 0xffffff00;
+			m_tbTip.FontColor.TextColor[UCDISPLAYMODE_LIGHT].Outline = 0xffc0c0c0;
+			m_tbTip.FontColor.TextColor[UCDISPLAYMODE_DARK].Text = 0xffffff00;
+			m_tbTip.FontColor.TextColor[UCDISPLAYMODE_DARK].Outline = 0xffc0c0c0;
+			m_tbTip.DisableFontColor.TextColor[UCDISPLAYMODE_DARK].Text = 0xffffff00;
+			m_tbTip.DisableFontColor.TextColor[UCDISPLAYMODE_LIGHT].Text = 0xffffff00;
 			m_tbTip.Align = 0;
 		}
 
@@ -194,6 +201,31 @@ public:
 			m_tbUsername.Font.Size = UCSize(19,38);
 			m_tbUsername.Font.OutlineSize = 4;
 			m_tbUsername.FontColor.TextColor[UCDISPLAYMODE_DARK].Outline = 0xff000000;
+		}
+
+		//UCRadioButton m_rbAzure;
+		{
+			m_rbAzure.UIName = "UCLogin::m_rbAzure";
+			m_rbAzure.SetNewRealSize(160.0f, 80.0f);
+			m_rbAzure.RealLocation = UCFPoint(94.0f, 510.0f);
+			m_rbAzure.Anchor = 0;
+			m_rbAzure.Font.Weight = 900;
+			m_rbAzure.Font.Decoration = 0x50;
+			m_rbAzure.Font.Size = UCSize(19, 38);
+			m_rbAzure.Font.OutlineSize = 4;
+			m_rbAzure.Text = "Azure";
+		}
+		//UCRadioButton m_rbAWS;
+		{
+			m_rbAWS.UIName = "UCLogin::m_rbAWS";
+			m_rbAWS.SetNewRealSize(160.0f, 80.0f);
+			m_rbAWS.RealLocation = UCFPoint(204.0f + 80.0f, 510.0f); 
+			m_rbAWS.Anchor = 0;
+			m_rbAWS.Font.Weight = 900;
+			m_rbAWS.Font.Decoration = 0x50;
+			m_rbAWS.Font.Size = UCSize(19, 38);
+			m_rbAWS.Font.OutlineSize = 4;
+			m_rbAWS.Text = "AWS";
 		}
 
 		//父子关系结构
@@ -211,6 +243,8 @@ public:
 			this->AddControl(&m_tbPassword);
 			this->AddControl(&m_tbTip);
 			this->AddControl(&m_tbUsername);
+			this->AddControl(&m_rbAzure);
+			this->AddControl(&m_rbAWS);
 		}
 	}
 	~UCLogin_UI()	//析构函数

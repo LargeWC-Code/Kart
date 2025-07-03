@@ -19,6 +19,9 @@
 class UCHome : public UCHome_UI
 {
 public:
+	UCEvent					OnLogout;
+	UCEvent					OnMatchSucceed;
+public:
 	UCGameUserID			GameUserID;
 	ucUINT64				Token;
 	UCString				Gate;
@@ -34,8 +37,6 @@ public:
 
 	UCFiber					FiberRotate;
 	UCFiber					FiberKeepAlive;
-
-	UCEvent					OnMatchSucceed;
 private:
 	UCRObjGameHome*			RObjGameHome;
 	UCRObjGameMatch*		RObjGameMatch;
@@ -109,6 +110,9 @@ public:
 		m_pInventory->Size.OnChange += UCEvent(this, Inventory_OnMySized);
 		m_pInventory->OnAvatarChanged += UCEvent(this, Inventory_OnAvatarChanged);
 		AddControl(m_pInventory, 10000);
+
+		m_btStressTest.OnClick = UCEvent(this, OnStressTestClick);
+		m_btLogout.OnClick = UCEvent(this, OnLogoutClick);
 	}
 	~UCHome()	//析构函数
 	{
@@ -408,6 +412,16 @@ public:
 			}
 			FiberData->Every(100);
 		}
+	}
+	ucVOID OnStressTestClick(UCObject* Object, UCEventArgs* Args)
+	{
+		UCString result = RObjGameHome->StressTest();
+		WBox(UCString("服务器返回: ") + result);
+	}
+	ucVOID OnLogoutClick(UCObject* Object, UCEventArgs* Args)
+	{
+		this->HideUI();
+		OnLogout(this, ucNULL);
 	}
 };
 
