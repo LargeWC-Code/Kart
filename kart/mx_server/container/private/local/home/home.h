@@ -905,7 +905,7 @@ public:
 
 		RContainer_NET.Log(UCString("init mysql") + UCString("\r\n"));
 
-		MySQL.Init(UCString("localhost"), UCString("root"), UCString("LargeWC<123456>"), UCString("kart"));
+		MySQL.Init(UCString("kartdb.mysql.database.azure.com"), UCString("LargeWC"), UCString("LargeWC@123456"), UCString("kart"));
 
 		UCMySQLRes ResUser;
 		UCStringA CmdUser = UCString("SELECT * FROM accounts WHERE username = '") + UCString("root") + UCString("'");

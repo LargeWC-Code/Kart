@@ -90,10 +90,10 @@ public:
 		Pant.Name = MeshPath + UCString("/pant/saiche_") + SexPath + UCString("_pant_") + ITOS(AvatarDataTemp.PantID) + UCString(".dat");
 		Shoe.Name = MeshPath + UCString("/shoe/saiche_") + SexPath + UCString("_shose_") + ITOS(AvatarDataTemp.ShoeID) + UCString(".dat");
 
-		CarBody.Name = CAR_PATH + UCString("/car") + ITOS(7000 + AvatarDataTemp.CarID) + UCString(".dat");
+		CarBody.Name = CAR_PATH + UCString("/car") + ITOS(AvatarDataTemp.CarID) + UCString(".dat");
 
 		for (ucINT i = 0; i < 4; i++)
-			Wheel[i].Name = CAR_PATH + UCString("/luntai/car") + ITOS(7000 + AvatarDataTemp.CarID) + UCString("_luntai.dat");
+			Wheel[i].Name = CAR_PATH + UCString("/luntai/car") + ITOS(AvatarDataTemp.CarID) + UCString("_luntai.dat");
 
 		Face.SetMaterial(MtlObject, 1);
 		Hair.SetMaterial(MtlObject, 1);

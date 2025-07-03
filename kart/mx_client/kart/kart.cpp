@@ -4,8 +4,8 @@ void main()
 {
 	UCDevice3D* Device3D = UIGetDevice3D();
 
-	ucINT ScreenCX = Device3D->GetScreenSize().cx;
-	ucINT ScreenCY = Device3D->GetScreenSize().cy;
+	//	ucINT ScreenCX = Device3D->GetScreenSize().cx;
+	//	ucINT ScreenCY = Device3D->GetScreenSize().cy;
 	GetScreenControl()->BackColor = 0xFF000000;
 
 	ucINT Scale = 100;//50;
@@ -16,7 +16,6 @@ void main()
 	Game.WinSize = UCSize(SCREEN_CX * Scale / 100, SCREEN_CY * Scale / 100);
 	Game.Size = UCSize(SCREEN_CX, SCREEN_CY);
 	Ckart* pkart = new Ckart;
-
 	Game.Run(pkart);
 	delete pkart;
 }
