@@ -84,7 +84,7 @@ public:
 		RContainer_NET.AppendClient(UCString("local//UCRObjGameUserData.obj"), typeof(UCRObjGameUserData), &RObjGameUserData);
 		RContainer_NET.AppendClient(UCString("local//UCRObjGameUserData_Ext.obj"), typeof(UCRObjGameUserData_Ext), &RObjGameUserData_Ext);		
 
-		GateUrl = UCString("ws://4.147.180.27:6800");
+		GateUrl = UCString("wss://4.147.180.27:6800");
 
 		m_pRegister = new UCRegister(&RObjGameHome);
 		m_pRegister->OnRegisterSucceed = UCEvent(this, OnRegisterSucceed);
