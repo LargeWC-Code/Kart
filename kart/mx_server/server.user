@@ -2,13 +2,13 @@
 <_xml_data Type='UCSolutionUser'> 
 	<mapOpenFile Type='UCStringIntMap'> 
 		<Key0 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\home\ucstoremanagement.h</Key0> 
-		<Value0 Type='int'>32</Value0> 
+		<Value0 Type='int'>28</Value0> 
 		<Key1 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\home\ucusermanagement.h</Key1> 
 		<Value1 Type='int'>1</Value1> 
 		<Key2 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\login\uclogin.h</Key2> 
 		<Value2 Type='int'>1</Value2> 
 		<Key3 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\home\uchome.h</Key3> 
-		<Value3 Type='int'>12</Value3> 
+		<Value3 Type='int'>1</Value3> 
 		<Key4 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\login\ucregister.h</Key4> 
 		<Value4 Type='int'>1</Value4> 
 		<Key5 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\player\avatar.h</Key5> 
