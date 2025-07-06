@@ -240,7 +240,7 @@ function initRuntime() {
   if (!Module["noFSInit"] && !FS.initialized) FS.init();
   TTY.init();
   // End ATINITS hooks
-  wasmExports["ic"]();
+  wasmExports["pc"]();
   // Begin ATPOSTCTORS hooks
   FS.ignorePermissions = false;
 }
@@ -389,9 +389,9 @@ async function createWasm() {
   /** @param {WebAssembly.Module=} module*/ function receiveInstance(instance, module) {
     wasmExports = instance.exports;
     wasmExports = Asyncify.instrumentWasmExports(wasmExports);
-    wasmMemory = wasmExports["hc"];
+    wasmMemory = wasmExports["oc"];
     updateMemoryViews();
-    wasmTable = wasmExports["jc"];
+    wasmTable = wasmExports["qc"];
     assignWasmExports(wasmExports);
     removeRunDependency("wasm-instantiate");
     return wasmExports;
@@ -7460,6 +7460,30 @@ var _emscripten_set_touchmove_callback_on_thread = (target, userData, useCapture
 
 var _emscripten_set_touchstart_callback_on_thread = (target, userData, useCapture, callbackfunc, targetThread) => registerTouchEventCallback(target, userData, useCapture, callbackfunc, 22, "touchstart", targetThread);
 
+var registerWebGlEventCallback = (target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) => {
+  var webGlEventHandlerFunc = (e = event) => {
+    if (((a1, a2, a3) => dynCall_iiii(callbackfunc, a1, a2, a3))(eventTypeId, 0, userData)) e.preventDefault();
+  };
+  var eventHandler = {
+    target: findEventTarget(target),
+    eventTypeString,
+    callbackfunc,
+    handlerFunc: webGlEventHandlerFunc,
+    useCapture
+  };
+  JSEvents.registerOrRemoveHandler(eventHandler);
+};
+
+var _emscripten_set_webglcontextlost_callback_on_thread = (target, userData, useCapture, callbackfunc, targetThread) => {
+  registerWebGlEventCallback(target, userData, useCapture, callbackfunc, 31, "webglcontextlost", targetThread);
+  return 0;
+};
+
+var _emscripten_set_webglcontextrestored_callback_on_thread = (target, userData, useCapture, callbackfunc, targetThread) => {
+  registerWebGlEventCallback(target, userData, useCapture, callbackfunc, 32, "webglcontextrestored", targetThread);
+  return 0;
+};
+
 var registerWheelEventCallback = (target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) => {
   JSEvents.wheelEvent ||= _malloc(96);
   // The DOM Level 3 events spec event 'wheel'
@@ -7491,6 +7515,55 @@ var _emscripten_set_wheel_callback_on_thread = (target, userData, useCapture, ca
   } else {
     return -1;
   }
+};
+
+var webglPowerPreferences = [ "default", "low-power", "high-performance" ];
+
+/** @suppress {duplicate } */ var _emscripten_webgl_do_create_context = (target, attributes) => {
+  var attr32 = ((attributes) >> 2);
+  var powerPreference = HEAP32[attr32 + (8 >> 2)];
+  var contextAttributes = {
+    "alpha": !!HEAP8[attributes + 0],
+    "depth": !!HEAP8[attributes + 1],
+    "stencil": !!HEAP8[attributes + 2],
+    "antialias": !!HEAP8[attributes + 3],
+    "premultipliedAlpha": !!HEAP8[attributes + 4],
+    "preserveDrawingBuffer": !!HEAP8[attributes + 5],
+    "powerPreference": webglPowerPreferences[powerPreference],
+    "failIfMajorPerformanceCaveat": !!HEAP8[attributes + 12],
+    // The following are not predefined WebGL context attributes in the WebGL specification, so the property names can be minified by Closure.
+    majorVersion: HEAP32[attr32 + (16 >> 2)],
+    minorVersion: HEAP32[attr32 + (20 >> 2)],
+    enableExtensionsByDefault: HEAP8[attributes + 24],
+    explicitSwapControl: HEAP8[attributes + 25],
+    proxyContextToMainThread: HEAP32[attr32 + (28 >> 2)],
+    renderViaOffscreenBackBuffer: HEAP8[attributes + 32]
+  };
+  var canvas = findCanvasEventTarget(target);
+  if (!canvas) {
+    return 0;
+  }
+  if (contextAttributes.explicitSwapControl) {
+    return 0;
+  }
+  var contextHandle = GL.createContext(canvas, contextAttributes);
+  return contextHandle;
+};
+
+var _emscripten_webgl_create_context = _emscripten_webgl_do_create_context;
+
+var _emscripten_webgl_destroy_context = contextHandle => {
+  if (GL.currentContext == contextHandle) GL.currentContext = 0;
+  GL.deleteContext(contextHandle);
+};
+
+/** @suppress {duplicate } */ var _emscripten_webgl_do_get_current_context = () => GL.currentContext ? GL.currentContext.handle : 0;
+
+var _emscripten_webgl_get_current_context = _emscripten_webgl_do_get_current_context;
+
+var _emscripten_webgl_make_context_current = contextHandle => {
+  var success = GL.makeContextCurrent(contextHandle);
+  return success ? 0 : -5;
 };
 
 class HandleAllocator {
@@ -9216,6 +9289,11 @@ Module["ccall"] = ccall;
 // Begin JS library exports
 // End JS library exports
 // end include: postlibrary.js
+function log_wasm_memory_size() {
+  var size = Module.wasmMemory ? Module.wasmMemory.buffer.byteLength : HEAPU8.buffer.byteLength;
+  console.log("WASM 内存大小 (bytes):", size);
+}
+
 function EM_get_canvas_left() {
   return Module.canvas.getBoundingClientRect().left;
 }
@@ -9345,242 +9423,249 @@ function EM_SyncCache(cacheDir, toPersistent) {
 var _free, _main, _malloc, _memcpy, _htons, _setThrew, _emscripten_stack_set_limits, __emscripten_stack_restore, __emscripten_stack_alloc, _emscripten_stack_get_current, dynCall_viii, dynCall_vii, dynCall_ii, dynCall_vi, dynCall_v, dynCall_iiii, dynCall_iii, dynCall_viiii, dynCall_iiiiii, dynCall_iiiiiii, dynCall_vif, dynCall_viif, dynCall_iiiii, dynCall_fiii, dynCall_fiiiii, dynCall_viiiiif, dynCall_vifffff, dynCall_viiiii, dynCall_viiiiii, dynCall_viiiiiii, dynCall_viiiiiiii, dynCall_fii, dynCall_ji, dynCall_iiif, dynCall_viifi, dynCall_iiiiff, dynCall_iiiiiff, dynCall_vij, dynCall_iij, dynCall_fi, dynCall_iiiiiiiiii, dynCall_iiiiiiii, dynCall_iiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiii, dynCall_iiiiiiiii, dynCall_iiiifi, dynCall_iijj, dynCall_j, dynCall_iif, dynCall_iid, dynCall_fif, dynCall_jiji, dynCall_iidiiii, dynCall_viijii, dynCall_iiiiij, dynCall_iiiiid, dynCall_iiiiijj, dynCall_iiiiiijj, _asyncify_start_unwind, _asyncify_stop_unwind, _asyncify_start_rewind, _asyncify_stop_rewind;
 
 function assignWasmExports(wasmExports) {
-  _free = wasmExports["kc"];
-  Module["_main"] = _main = wasmExports["lc"];
-  _malloc = wasmExports["mc"];
-  _memcpy = wasmExports["nc"];
-  _htons = wasmExports["oc"];
-  _setThrew = wasmExports["pc"];
-  _emscripten_stack_set_limits = wasmExports["qc"];
-  __emscripten_stack_restore = wasmExports["rc"];
-  __emscripten_stack_alloc = wasmExports["sc"];
-  _emscripten_stack_get_current = wasmExports["tc"];
-  dynCalls["viii"] = dynCall_viii = wasmExports["uc"];
-  dynCalls["vii"] = dynCall_vii = wasmExports["vc"];
-  dynCalls["ii"] = dynCall_ii = wasmExports["wc"];
-  dynCalls["vi"] = dynCall_vi = wasmExports["xc"];
-  dynCalls["v"] = dynCall_v = wasmExports["yc"];
-  dynCalls["iiii"] = dynCall_iiii = wasmExports["zc"];
-  dynCalls["iii"] = dynCall_iii = wasmExports["Ac"];
-  dynCalls["viiii"] = dynCall_viiii = wasmExports["Bc"];
-  dynCalls["iiiiii"] = dynCall_iiiiii = wasmExports["Cc"];
-  dynCalls["iiiiiii"] = dynCall_iiiiiii = wasmExports["Dc"];
-  dynCalls["vif"] = dynCall_vif = wasmExports["Ec"];
-  dynCalls["viif"] = dynCall_viif = wasmExports["Fc"];
-  dynCalls["iiiii"] = dynCall_iiiii = wasmExports["Gc"];
-  dynCalls["fiii"] = dynCall_fiii = wasmExports["Hc"];
-  dynCalls["fiiiii"] = dynCall_fiiiii = wasmExports["Ic"];
-  dynCalls["viiiiif"] = dynCall_viiiiif = wasmExports["Jc"];
-  dynCalls["vifffff"] = dynCall_vifffff = wasmExports["Kc"];
-  dynCalls["viiiii"] = dynCall_viiiii = wasmExports["Lc"];
-  dynCalls["viiiiii"] = dynCall_viiiiii = wasmExports["Mc"];
-  dynCalls["viiiiiii"] = dynCall_viiiiiii = wasmExports["Nc"];
-  dynCalls["viiiiiiii"] = dynCall_viiiiiiii = wasmExports["Oc"];
-  dynCalls["fii"] = dynCall_fii = wasmExports["Pc"];
-  dynCalls["ji"] = dynCall_ji = wasmExports["Qc"];
-  dynCalls["iiif"] = dynCall_iiif = wasmExports["Rc"];
-  dynCalls["viifi"] = dynCall_viifi = wasmExports["Sc"];
-  dynCalls["iiiiff"] = dynCall_iiiiff = wasmExports["Tc"];
-  dynCalls["iiiiiff"] = dynCall_iiiiiff = wasmExports["Uc"];
-  dynCalls["vij"] = dynCall_vij = wasmExports["Vc"];
-  dynCalls["iij"] = dynCall_iij = wasmExports["Wc"];
-  dynCalls["fi"] = dynCall_fi = wasmExports["Xc"];
-  dynCalls["iiiiiiiiii"] = dynCall_iiiiiiiiii = wasmExports["Yc"];
-  dynCalls["iiiiiiii"] = dynCall_iiiiiiii = wasmExports["Zc"];
-  dynCalls["iiiiiiiiiiii"] = dynCall_iiiiiiiiiiii = wasmExports["_c"];
-  dynCalls["iiiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiiii = wasmExports["$c"];
-  dynCalls["iiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiii = wasmExports["ad"];
-  dynCalls["iiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiii = wasmExports["bd"];
-  dynCalls["iiiiiiiii"] = dynCall_iiiiiiiii = wasmExports["cd"];
-  dynCalls["iiiifi"] = dynCall_iiiifi = wasmExports["dd"];
-  dynCalls["iijj"] = dynCall_iijj = wasmExports["ed"];
-  dynCalls["j"] = dynCall_j = wasmExports["fd"];
-  dynCalls["iif"] = dynCall_iif = wasmExports["gd"];
-  dynCalls["iid"] = dynCall_iid = wasmExports["hd"];
-  dynCalls["fif"] = dynCall_fif = wasmExports["id"];
-  dynCalls["jiji"] = dynCall_jiji = wasmExports["jd"];
-  dynCalls["iidiiii"] = dynCall_iidiiii = wasmExports["kd"];
-  dynCalls["viijii"] = dynCall_viijii = wasmExports["ld"];
-  dynCalls["iiiiij"] = dynCall_iiiiij = wasmExports["md"];
-  dynCalls["iiiiid"] = dynCall_iiiiid = wasmExports["nd"];
-  dynCalls["iiiiijj"] = dynCall_iiiiijj = wasmExports["od"];
-  dynCalls["iiiiiijj"] = dynCall_iiiiiijj = wasmExports["pd"];
-  _asyncify_start_unwind = wasmExports["qd"];
-  _asyncify_stop_unwind = wasmExports["rd"];
-  _asyncify_start_rewind = wasmExports["sd"];
-  _asyncify_stop_rewind = wasmExports["td"];
+  _free = wasmExports["rc"];
+  Module["_main"] = _main = wasmExports["sc"];
+  _malloc = wasmExports["tc"];
+  _memcpy = wasmExports["uc"];
+  _htons = wasmExports["vc"];
+  _setThrew = wasmExports["wc"];
+  _emscripten_stack_set_limits = wasmExports["xc"];
+  __emscripten_stack_restore = wasmExports["yc"];
+  __emscripten_stack_alloc = wasmExports["zc"];
+  _emscripten_stack_get_current = wasmExports["Ac"];
+  dynCalls["viii"] = dynCall_viii = wasmExports["Bc"];
+  dynCalls["vii"] = dynCall_vii = wasmExports["Cc"];
+  dynCalls["ii"] = dynCall_ii = wasmExports["Dc"];
+  dynCalls["vi"] = dynCall_vi = wasmExports["Ec"];
+  dynCalls["v"] = dynCall_v = wasmExports["Fc"];
+  dynCalls["iiii"] = dynCall_iiii = wasmExports["Gc"];
+  dynCalls["iii"] = dynCall_iii = wasmExports["Hc"];
+  dynCalls["viiii"] = dynCall_viiii = wasmExports["Ic"];
+  dynCalls["iiiiii"] = dynCall_iiiiii = wasmExports["Jc"];
+  dynCalls["iiiiiii"] = dynCall_iiiiiii = wasmExports["Kc"];
+  dynCalls["vif"] = dynCall_vif = wasmExports["Lc"];
+  dynCalls["viif"] = dynCall_viif = wasmExports["Mc"];
+  dynCalls["iiiii"] = dynCall_iiiii = wasmExports["Nc"];
+  dynCalls["fiii"] = dynCall_fiii = wasmExports["Oc"];
+  dynCalls["fiiiii"] = dynCall_fiiiii = wasmExports["Pc"];
+  dynCalls["viiiiif"] = dynCall_viiiiif = wasmExports["Qc"];
+  dynCalls["vifffff"] = dynCall_vifffff = wasmExports["Rc"];
+  dynCalls["viiiii"] = dynCall_viiiii = wasmExports["Sc"];
+  dynCalls["viiiiii"] = dynCall_viiiiii = wasmExports["Tc"];
+  dynCalls["viiiiiii"] = dynCall_viiiiiii = wasmExports["Uc"];
+  dynCalls["viiiiiiii"] = dynCall_viiiiiiii = wasmExports["Vc"];
+  dynCalls["fii"] = dynCall_fii = wasmExports["Wc"];
+  dynCalls["ji"] = dynCall_ji = wasmExports["Xc"];
+  dynCalls["iiif"] = dynCall_iiif = wasmExports["Yc"];
+  dynCalls["viifi"] = dynCall_viifi = wasmExports["Zc"];
+  dynCalls["iiiiff"] = dynCall_iiiiff = wasmExports["_c"];
+  dynCalls["iiiiiff"] = dynCall_iiiiiff = wasmExports["$c"];
+  dynCalls["vij"] = dynCall_vij = wasmExports["ad"];
+  dynCalls["iij"] = dynCall_iij = wasmExports["bd"];
+  dynCalls["fi"] = dynCall_fi = wasmExports["cd"];
+  dynCalls["iiiiiiiiii"] = dynCall_iiiiiiiiii = wasmExports["dd"];
+  dynCalls["iiiiiiii"] = dynCall_iiiiiiii = wasmExports["ed"];
+  dynCalls["iiiiiiiiiiii"] = dynCall_iiiiiiiiiiii = wasmExports["fd"];
+  dynCalls["iiiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiiii = wasmExports["gd"];
+  dynCalls["iiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiii = wasmExports["hd"];
+  dynCalls["iiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiii = wasmExports["id"];
+  dynCalls["iiiiiiiii"] = dynCall_iiiiiiiii = wasmExports["jd"];
+  dynCalls["iiiifi"] = dynCall_iiiifi = wasmExports["kd"];
+  dynCalls["iijj"] = dynCall_iijj = wasmExports["ld"];
+  dynCalls["j"] = dynCall_j = wasmExports["md"];
+  dynCalls["iif"] = dynCall_iif = wasmExports["nd"];
+  dynCalls["iid"] = dynCall_iid = wasmExports["od"];
+  dynCalls["fif"] = dynCall_fif = wasmExports["pd"];
+  dynCalls["jiji"] = dynCall_jiji = wasmExports["qd"];
+  dynCalls["iidiiii"] = dynCall_iidiiii = wasmExports["rd"];
+  dynCalls["viijii"] = dynCall_viijii = wasmExports["sd"];
+  dynCalls["iiiiij"] = dynCall_iiiiij = wasmExports["td"];
+  dynCalls["iiiiid"] = dynCall_iiiiid = wasmExports["ud"];
+  dynCalls["iiiiijj"] = dynCall_iiiiijj = wasmExports["vd"];
+  dynCalls["iiiiiijj"] = dynCall_iiiiiijj = wasmExports["wd"];
+  _asyncify_start_unwind = wasmExports["xd"];
+  _asyncify_stop_unwind = wasmExports["yd"];
+  _asyncify_start_rewind = wasmExports["zd"];
+  _asyncify_stop_rewind = wasmExports["Ad"];
 }
 
 var wasmImports = {
-  /** @export */ db: EM_CheckCacheExists,
-  /** @export */ Ra: EM_GetHREF,
-  /** @export */ _a: EM_HideInput,
-  /** @export */ cb: EM_ReadFromCache,
-  /** @export */ ab: EM_SaveToCache,
-  /** @export */ Qa: EM_SetCacheDir,
-  /** @export */ jb: EM_ShowInput,
-  /** @export */ $a: EM_SyncCache,
-  /** @export */ Fa: EM_get_canvas_left,
-  /** @export */ Ea: EM_get_canvas_top,
-  /** @export */ Ta: _Mix_FreeChunk,
-  /** @export */ Xa: _Mix_FreeMusic,
-  /** @export */ Ya: _Mix_LoadMUS,
-  /** @export */ Va: _Mix_LoadWAV_RW,
-  /** @export */ Ka: _Mix_OpenAudio,
-  /** @export */ T: _Mix_PauseMusic,
-  /** @export */ Sa: _Mix_PlayChannelTimed,
-  /** @export */ ma: _Mix_PlayMusic,
-  /** @export */ Ua: _SDL_FreeRW,
-  /** @export */ bc: _SDL_FreeSurface,
-  /** @export */ Ja: _SDL_GL_SwapBuffers,
-  /** @export */ cc: _SDL_LockSurface,
-  /** @export */ Wa: _SDL_RWFromFile,
-  /** @export */ fb: _SDL_SetVideoMode,
-  /** @export */ Y: _TTF_CloseFont,
-  /** @export */ ya: _TTF_FontDescent,
-  /** @export */ za: _TTF_FontHeight,
-  /** @export */ Ma: _TTF_Init,
-  /** @export */ Aa: _TTF_OpenFont,
-  /** @export */ dc: _TTF_RenderUTF8_Solid,
-  /** @export */ ec: _TTF_SizeUTF8,
+  /** @export */ hb: EM_CheckCacheExists,
+  /** @export */ Pa: EM_GetHREF,
+  /** @export */ ab: EM_HideInput,
+  /** @export */ gb: EM_ReadFromCache,
+  /** @export */ eb: EM_SaveToCache,
+  /** @export */ Oa: EM_SetCacheDir,
+  /** @export */ db: EM_ShowInput,
+  /** @export */ cb: EM_SyncCache,
+  /** @export */ Ga: EM_get_canvas_left,
+  /** @export */ Fa: EM_get_canvas_top,
+  /** @export */ Wa: _Mix_FreeChunk,
+  /** @export */ _a: _Mix_FreeMusic,
+  /** @export */ $a: _Mix_LoadMUS,
+  /** @export */ Ya: _Mix_LoadWAV_RW,
+  /** @export */ nc: _Mix_OpenAudio,
+  /** @export */ S: _Mix_PauseMusic,
+  /** @export */ Va: _Mix_PlayChannelTimed,
+  /** @export */ ka: _Mix_PlayMusic,
+  /** @export */ Xa: _SDL_FreeRW,
+  /** @export */ fc: _SDL_FreeSurface,
+  /** @export */ Ia: _SDL_GL_SwapBuffers,
+  /** @export */ gc: _SDL_LockSurface,
+  /** @export */ Za: _SDL_RWFromFile,
+  /** @export */ jb: _SDL_SetVideoMode,
+  /** @export */ X: _TTF_CloseFont,
+  /** @export */ wa: _TTF_FontDescent,
+  /** @export */ xa: _TTF_FontHeight,
+  /** @export */ Ka: _TTF_Init,
+  /** @export */ ya: _TTF_OpenFont,
+  /** @export */ hc: _TTF_RenderUTF8_Solid,
+  /** @export */ ic: _TTF_SizeUTF8,
   /** @export */ j: ___assert_fail,
-  /** @export */ sb: ___call_sighandler,
+  /** @export */ wb: ___call_sighandler,
   /** @export */ a: ___cxa_rethrow,
   /** @export */ c: ___cxa_throw,
-  /** @export */ oa: ___syscall_fcntl64,
-  /** @export */ Gb: ___syscall_fstat64,
-  /** @export */ Eb: ___syscall_ftruncate64,
-  /** @export */ Db: ___syscall_getcwd,
-  /** @export */ Ib: ___syscall_ioctl,
-  /** @export */ Fb: ___syscall_newfstatat,
-  /** @export */ pa: ___syscall_openat,
-  /** @export */ rb: ___syscall_readlinkat,
-  /** @export */ Kb: __abort_js,
-  /** @export */ nb: __emscripten_lookup_name,
-  /** @export */ ub: __emscripten_runtime_keepalive_clear,
-  /** @export */ qb: __emscripten_system,
-  /** @export */ ob: __emscripten_throw_longjmp,
-  /** @export */ vb: __gmtime_js,
-  /** @export */ xb: __localtime_js,
-  /** @export */ yb: __mktime_js,
-  /** @export */ zb: __tzset_js,
-  /** @export */ bb: _emscripten_async_wget2_data,
-  /** @export */ Jb: _emscripten_date_now,
-  /** @export */ Lb: _emscripten_fiber_swap,
-  /** @export */ ga: _emscripten_get_canvas_element_size,
+  /** @export */ ma: ___syscall_fcntl64,
+  /** @export */ Lb: ___syscall_fstat64,
+  /** @export */ Jb: ___syscall_ftruncate64,
+  /** @export */ Hb: ___syscall_getcwd,
+  /** @export */ Mb: ___syscall_ioctl,
+  /** @export */ Kb: ___syscall_newfstatat,
+  /** @export */ na: ___syscall_openat,
+  /** @export */ vb: ___syscall_readlinkat,
+  /** @export */ Pb: __abort_js,
+  /** @export */ rb: __emscripten_lookup_name,
+  /** @export */ zb: __emscripten_runtime_keepalive_clear,
+  /** @export */ ub: __emscripten_system,
+  /** @export */ sb: __emscripten_throw_longjmp,
+  /** @export */ Ab: __gmtime_js,
+  /** @export */ Bb: __localtime_js,
+  /** @export */ Cb: __mktime_js,
+  /** @export */ Db: __tzset_js,
+  /** @export */ fb: _emscripten_async_wget2_data,
+  /** @export */ Nb: _emscripten_date_now,
+  /** @export */ Qb: _emscripten_fiber_swap,
+  /** @export */ ba: _emscripten_get_canvas_element_size,
   /** @export */ E: _emscripten_get_now,
-  /** @export */ pb: _emscripten_resize_heap,
-  /** @export */ gc: _emscripten_run_script,
-  /** @export */ Yb: _emscripten_set_fullscreenchange_callback_on_thread,
-  /** @export */ Ub: _emscripten_set_keydown_callback_on_thread,
-  /** @export */ Mb: _emscripten_set_keyup_callback_on_thread,
-  /** @export */ eb: _emscripten_set_main_loop,
-  /** @export */ Hb: _emscripten_set_mousedown_callback_on_thread,
-  /** @export */ mb: _emscripten_set_mousemove_callback_on_thread,
-  /** @export */ wb: _emscripten_set_mouseup_callback_on_thread,
-  /** @export */ ac: _emscripten_set_resize_callback_on_thread,
-  /** @export */ gb: _emscripten_set_touchcancel_callback_on_thread,
-  /** @export */ ib: _emscripten_set_touchend_callback_on_thread,
-  /** @export */ hb: _emscripten_set_touchmove_callback_on_thread,
-  /** @export */ kb: _emscripten_set_touchstart_callback_on_thread,
-  /** @export */ lb: _emscripten_set_wheel_callback_on_thread,
-  /** @export */ ra: _emscripten_websocket_close,
-  /** @export */ sa: _emscripten_websocket_delete,
-  /** @export */ Wb: _emscripten_websocket_get_url,
-  /** @export */ Xb: _emscripten_websocket_get_url_length,
-  /** @export */ Tb: _emscripten_websocket_is_supported,
-  /** @export */ Sb: _emscripten_websocket_new,
-  /** @export */ Vb: _emscripten_websocket_send_binary,
-  /** @export */ Pb: _emscripten_websocket_set_onclose_callback_on_thread,
-  /** @export */ Qb: _emscripten_websocket_set_onerror_callback_on_thread,
-  /** @export */ Ob: _emscripten_websocket_set_onmessage_callback_on_thread,
-  /** @export */ Rb: _emscripten_websocket_set_onopen_callback_on_thread,
-  /** @export */ Bb: _environ_get,
-  /** @export */ Cb: _environ_sizes_get,
-  /** @export */ Nb: _exit,
-  /** @export */ W: _fd_close,
-  /** @export */ na: _fd_read,
-  /** @export */ Ab: _fd_seek,
-  /** @export */ V: _fd_write,
-  /** @export */ O: _glActiveTexture,
-  /** @export */ ha: _glAttachShader,
+  /** @export */ tb: _emscripten_resize_heap,
+  /** @export */ kc: _emscripten_run_script,
+  /** @export */ ac: _emscripten_set_fullscreenchange_callback_on_thread,
+  /** @export */ Wb: _emscripten_set_keydown_callback_on_thread,
+  /** @export */ Ob: _emscripten_set_keyup_callback_on_thread,
+  /** @export */ ib: _emscripten_set_main_loop,
+  /** @export */ Ib: _emscripten_set_mousedown_callback_on_thread,
+  /** @export */ qb: _emscripten_set_mousemove_callback_on_thread,
+  /** @export */ xb: _emscripten_set_mouseup_callback_on_thread,
+  /** @export */ ec: _emscripten_set_resize_callback_on_thread,
+  /** @export */ kb: _emscripten_set_touchcancel_callback_on_thread,
+  /** @export */ mb: _emscripten_set_touchend_callback_on_thread,
+  /** @export */ lb: _emscripten_set_touchmove_callback_on_thread,
+  /** @export */ nb: _emscripten_set_touchstart_callback_on_thread,
+  /** @export */ Ra: _emscripten_set_webglcontextlost_callback_on_thread,
+  /** @export */ Qa: _emscripten_set_webglcontextrestored_callback_on_thread,
+  /** @export */ pb: _emscripten_set_wheel_callback_on_thread,
+  /** @export */ Ta: _emscripten_webgl_create_context,
+  /** @export */ Ua: _emscripten_webgl_destroy_context,
+  /** @export */ ja: _emscripten_webgl_get_current_context,
+  /** @export */ Sa: _emscripten_webgl_make_context_current,
+  /** @export */ pa: _emscripten_websocket_close,
+  /** @export */ qa: _emscripten_websocket_delete,
+  /** @export */ _b: _emscripten_websocket_get_url,
+  /** @export */ $b: _emscripten_websocket_get_url_length,
+  /** @export */ Yb: _emscripten_websocket_is_supported,
+  /** @export */ Xb: _emscripten_websocket_new,
+  /** @export */ Zb: _emscripten_websocket_send_binary,
+  /** @export */ Tb: _emscripten_websocket_set_onclose_callback_on_thread,
+  /** @export */ Ub: _emscripten_websocket_set_onerror_callback_on_thread,
+  /** @export */ Sb: _emscripten_websocket_set_onmessage_callback_on_thread,
+  /** @export */ Vb: _emscripten_websocket_set_onopen_callback_on_thread,
+  /** @export */ Fb: _environ_get,
+  /** @export */ Gb: _environ_sizes_get,
+  /** @export */ Rb: _exit,
+  /** @export */ V: _fd_close,
+  /** @export */ la: _fd_read,
+  /** @export */ Eb: _fd_seek,
+  /** @export */ U: _fd_write,
+  /** @export */ N: _glActiveTexture,
+  /** @export */ ea: _glAttachShader,
   /** @export */ d: _glBindBuffer,
   /** @export */ g: _glBindFramebuffer,
-  /** @export */ _b: _glBindRenderbuffer,
-  /** @export */ q: _glBindTexture,
-  /** @export */ aa: _glBlendFunc,
+  /** @export */ cc: _glBindRenderbuffer,
+  /** @export */ p: _glBindTexture,
+  /** @export */ Z: _glBlendFunc,
   /** @export */ v: _glBufferData,
   /** @export */ t: _glClear,
   /** @export */ H: _glClearColor,
-  /** @export */ Ha: _glClearDepthf,
-  /** @export */ Ga: _glClearStencil,
-  /** @export */ ja: _glCompileShader,
-  /** @export */ Pa: _glCreateProgram,
-  /** @export */ la: _glCreateShader,
-  /** @export */ R: _glCullFace,
-  /** @export */ xa: _glDeleteBuffers,
-  /** @export */ wa: _glDeleteFramebuffers,
-  /** @export */ ea: _glDeleteProgram,
-  /** @export */ va: _glDeleteRenderbuffers,
+  /** @export */ mc: _glClearDepthf,
+  /** @export */ lc: _glClearStencil,
+  /** @export */ ga: _glCompileShader,
+  /** @export */ Na: _glCreateProgram,
+  /** @export */ ia: _glCreateShader,
+  /** @export */ Q: _glCullFace,
+  /** @export */ va: _glDeleteBuffers,
+  /** @export */ ua: _glDeleteFramebuffers,
+  /** @export */ ca: _glDeleteProgram,
+  /** @export */ ta: _glDeleteRenderbuffers,
   /** @export */ C: _glDeleteShader,
   /** @export */ F: _glDeleteTextures,
   /** @export */ G: _glDepthFunc,
-  /** @export */ ba: _glDepthMask,
+  /** @export */ _: _glDepthMask,
   /** @export */ m: _glDisable,
   /** @export */ f: _glDisableVertexAttribArray,
   /** @export */ r: _glDrawArrays,
   /** @export */ u: _glDrawElements,
   /** @export */ i: _glEnable,
   /** @export */ h: _glEnableVertexAttribArray,
-  /** @export */ Ia: _glFinish,
-  /** @export */ ca: _glFlush,
-  /** @export */ La: _glFramebufferRenderbuffer,
-  /** @export */ ta: _glFramebufferTexture2D,
-  /** @export */ da: _glGenBuffers,
-  /** @export */ ua: _glGenFramebuffers,
-  /** @export */ $b: _glGenRenderbuffers,
+  /** @export */ Ha: _glFinish,
+  /** @export */ $: _glFlush,
+  /** @export */ Ja: _glFramebufferRenderbuffer,
+  /** @export */ ra: _glFramebufferTexture2D,
+  /** @export */ aa: _glGenBuffers,
+  /** @export */ sa: _glGenFramebuffers,
+  /** @export */ dc: _glGenRenderbuffers,
   /** @export */ y: _glGenTextures,
   /** @export */ L: _glGenerateMipmap,
-  /** @export */ p: _glGetAttribLocation,
-  /** @export */ S: _glGetIntegerv,
-  /** @export */ Na: _glGetProgramInfoLog,
-  /** @export */ fa: _glGetProgramiv,
-  /** @export */ ia: _glGetShaderInfoLog,
+  /** @export */ q: _glGetAttribLocation,
+  /** @export */ R: _glGetIntegerv,
+  /** @export */ La: _glGetProgramInfoLog,
+  /** @export */ da: _glGetProgramiv,
+  /** @export */ fa: _glGetShaderInfoLog,
   /** @export */ I: _glGetShaderiv,
-  /** @export */ Q: _glGetString,
-  /** @export */ N: _glGetUniformLocation,
-  /** @export */ Oa: _glLinkProgram,
+  /** @export */ P: _glGetString,
+  /** @export */ Y: _glGetUniformLocation,
+  /** @export */ Ma: _glLinkProgram,
   /** @export */ B: _glPixelStorei,
   /** @export */ x: _glReadPixels,
-  /** @export */ Zb: _glRenderbufferStorage,
+  /** @export */ bc: _glRenderbufferStorage,
   /** @export */ s: _glScissor,
-  /** @export */ ka: _glShaderSource,
+  /** @export */ ha: _glShaderSource,
   /** @export */ n: _glTexImage2D,
   /** @export */ b: _glTexParameteri,
   /** @export */ K: _glTexSubImage2D,
-  /** @export */ _: _glUniform1fv,
-  /** @export */ fc: _glUniform1i,
-  /** @export */ $: _glUniform1iv,
-  /** @export */ Z: _glUniform2fv,
-  /** @export */ Da: _glUniform3fv,
+  /** @export */ Da: _glUniform1fv,
+  /** @export */ jc: _glUniform1i,
+  /** @export */ Ea: _glUniform1iv,
+  /** @export */ Ca: _glUniform2fv,
+  /** @export */ Ba: _glUniform3fv,
   /** @export */ M: _glUniform4fv,
-  /** @export */ Ca: _glUniformMatrix3fv,
-  /** @export */ Ba: _glUniformMatrix4fv,
-  /** @export */ P: _glUseProgram,
+  /** @export */ Aa: _glUniformMatrix3fv,
+  /** @export */ za: _glUniformMatrix4fv,
+  /** @export */ O: _glUseProgram,
   /** @export */ e: _glVertexAttribPointer,
   /** @export */ D: _glViewport,
-  /** @export */ U: _glutFullScreen,
+  /** @export */ T: _glutFullScreen,
   /** @export */ k: invoke_ii,
   /** @export */ z: invoke_iii,
   /** @export */ A: invoke_iiii,
-  /** @export */ X: invoke_iiiii,
-  /** @export */ qa: invoke_j,
-  /** @export */ Za: invoke_v,
+  /** @export */ W: invoke_iiiii,
+  /** @export */ oa: invoke_j,
+  /** @export */ bb: invoke_v,
   /** @export */ l: invoke_vi,
   /** @export */ o: invoke_vii,
   /** @export */ w: invoke_viii,
   /** @export */ J: invoke_viiii,
-  /** @export */ tb: _proc_exit
+  /** @export */ ob: log_wasm_memory_size,
+  /** @export */ yb: _proc_exit
 };
 
 var wasmExports;

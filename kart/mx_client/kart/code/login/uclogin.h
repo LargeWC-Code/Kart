@@ -50,7 +50,7 @@ public:
 		FiberTip.Start(0);
 
 		// 默认选择Azure
-		SelectUrl = UCString("wss://4.147.180.27:6800");
+		SelectUrl = UCString("wss://www.largewc.org:6800");;
 		m_rbAzure.OnClick = UCEvent(this, OnAzureClick);
 		m_rbAWS.OnClick = UCEvent(this, OnAWSClick);
 	}
