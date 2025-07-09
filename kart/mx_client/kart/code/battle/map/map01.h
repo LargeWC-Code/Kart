@@ -22,11 +22,15 @@ public:
 		Reset.Name = UCString("res/model/field/field1/reset1.dat");
 		Reset.Visible = 0;
 	}
+	~UCKartMap01()
+	{
+
+	}
 	//初始化	UI、场景
 	ucVOID Init(UCSceneCtl* Parent)
 	{
 		SceneCtl = Parent;
-		SceneCtl->World->OnCollide += UCEvent(this, OnCollide);
+		SceneCtl->World->OnCollide = UCEvent(this, OnCollide);
 
 		Scene.Parent = SceneCtl->Scene;
 		Ground.Parent = SceneCtl->Scene;

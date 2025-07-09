@@ -247,31 +247,7 @@ public:
 	}
 	ucVOID OnProfileClick(UCObject* Object, UCEventArgs* Args)
 	{
-		UCTimeFiberData* FiberData = (UCTimeFiberData*)GetRunFiberData();
-
-		m_pProfile->m_tbUsername.Text = RObjGameUserData->Username.Value;
-		m_pProfile->m_tbNickname.Text = RObjGameUserData->Nickname.Value;
-		m_pProfile->m_tbEmail.Text = RObjGameUserData->Email.Value;
-
 		m_pProfile->ShowUI();
-
-		while (m_pProfile->Visible.Value)
-			FiberData->Delay(1000);
-
-		if (m_pProfile->Confirmed)
-		{
-			RObjGameHome->ChangeProfile(GameUserID, Token,
-				m_pProfile->m_tbPassword.Text.Value,
-				m_pProfile->m_tbNickname.Text.Value,
-				m_pProfile->m_tbEmail.Text.Value);
-
-			RObjGameUserData->Update();
-
-			if (RObjGameUserData->Nickname.Value.IsEmpty())
-				m_lbNickname.Text = RObjGameUserData->Username.Value;
-			else
-				m_lbNickname.Text = RObjGameUserData->Nickname.Value;
-		}
 	}
 	ucVOID OnUserManagementClick(UCObject* Object, UCEventArgs* Args)
 	{
@@ -349,13 +325,9 @@ public:
 
 		if (RObjGameUserData->Access_Level.Value >= 1)
 			m_btStoreManagement.Visible = 1;
-		else
-			m_btStoreManagement.Visible = 0;
 
 		if (RObjGameUserData->Access_Level.Value >= 2)
 			m_btUserManagement.Visible = 1;
-		else
-			m_btUserManagement.Visible = 0;
 
 		m_lbNickname.Text = RObjGameUserData->Nickname.Value;
 		m_lbVMoney.Text = ITOS(RObjGameUserData->VMoney.Value) + UCString("$");

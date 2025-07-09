@@ -51,7 +51,7 @@ private:
 public:
 	Ckart()
 	{
-		UCRunNewFiber(UCEvent(this, OnFiberInit), ucNULL);
+		OnFiberInit(ucNULL, ucNULL);
 	}
 	~Ckart()
 	{
@@ -72,7 +72,6 @@ public:
 		UCGetApp()->Owner = UCString("Kart-Monitor");
 
 		RContainer_NET.WS_Run(1);
-		RContainer_NET.RunNewFiber(UCString("client"), UCGetTime(), ucTRUE, ucFALSE, 100);
 
 		RContainer_NET.AppendClient(UCString("local//UCRObjGameGate.obj"), typeof(UCRObjGameGate), &RObjGameGate);
 
@@ -112,6 +111,8 @@ public:
 		AddControl(m_pBattle);
 
 		AutoUpdate(ucTRUE);
+
+		RContainer_NET.RunNewFiber(UCString("client"), UCGetTime(), ucTRUE, ucFALSE, 100);
 	}
 	ucBOOL InitGateObj(ucCONST UCString& GateUrl)
 	{

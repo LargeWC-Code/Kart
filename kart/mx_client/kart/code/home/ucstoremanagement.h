@@ -338,6 +338,16 @@ public:
 	{
 		UCStoreTool* StoreTool = (UCStoreTool*)Object;
 
+		for (ucINT i = 0; i < m_lbStores.GetRowSize(); i++)
+		{
+			UCStoreTool* StoreToolSelect = (UCStoreTool*)m_lbStores.GetControl(i, 0);
+
+			if (StoreTool == StoreToolSelect)
+			{
+				m_lbStores.DeleteRow(i);
+				return;
+			}
+		}
 	}
 };
 
