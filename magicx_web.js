@@ -2915,8 +2915,15 @@ var TTY = {
   }
 };
 
+var zeroMemory = (ptr, size) => HEAPU8.fill(0, ptr, ptr + size);
+
+var alignMemory = (size, alignment) => Math.ceil(size / alignment) * alignment;
+
 var mmapAlloc = size => {
-  abort();
+  size = alignMemory(size, 65536);
+  var ptr = _emscripten_builtin_memalign(65536, size);
+  if (ptr) zeroMemory(ptr, size);
+  return ptr;
 };
 
 var MEMFS = {
@@ -7030,8 +7037,6 @@ var getHeapMax = () => // Stay one Wasm page short of 4GB: while e.g. Chrome is 
 // casing all heap size related code to treat 0 specially.
 2147483648;
 
-var alignMemory = (size, alignment) => Math.ceil(size / alignment) * alignment;
-
 var growMemory = size => {
   var b = wasmMemory.buffer;
   var pages = ((size - b.byteLength + 65535) / 65536) | 0;
@@ -9290,7 +9295,7 @@ Module["ccall"] = ccall;
 // End JS library exports
 // end include: postlibrary.js
 function log_wasm_memory_size() {
-  var size = Module.wasmMemory ? Module.wasmMemory.buffer.byteLength : HEAPU8.buffer.byteLength;
+  var size = HEAPU8.buffer.byteLength;
   console.log("WASM 内存大小 (bytes):", size);
 }
 
@@ -9420,7 +9425,7 @@ function EM_SyncCache(cacheDir, toPersistent) {
 }
 
 // Imports from the Wasm binary.
-var _free, _main, _malloc, _memcpy, _htons, _setThrew, _emscripten_stack_set_limits, __emscripten_stack_restore, __emscripten_stack_alloc, _emscripten_stack_get_current, dynCall_viii, dynCall_vii, dynCall_ii, dynCall_vi, dynCall_v, dynCall_iiii, dynCall_iii, dynCall_viiii, dynCall_iiiiii, dynCall_iiiiiii, dynCall_vif, dynCall_viif, dynCall_iiiii, dynCall_fiii, dynCall_fiiiii, dynCall_viiiiif, dynCall_vifffff, dynCall_viiiii, dynCall_viiiiii, dynCall_viiiiiii, dynCall_viiiiiiii, dynCall_fii, dynCall_ji, dynCall_iiif, dynCall_viifi, dynCall_iiiiff, dynCall_iiiiiff, dynCall_vij, dynCall_iij, dynCall_fi, dynCall_iiiiiiiiii, dynCall_iiiiiiii, dynCall_iiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiii, dynCall_iiiiiiiii, dynCall_iiiifi, dynCall_iijj, dynCall_j, dynCall_iif, dynCall_iid, dynCall_fif, dynCall_jiji, dynCall_iidiiii, dynCall_viijii, dynCall_iiiiij, dynCall_iiiiid, dynCall_iiiiijj, dynCall_iiiiiijj, _asyncify_start_unwind, _asyncify_stop_unwind, _asyncify_start_rewind, _asyncify_stop_rewind;
+var _free, _main, _malloc, _memcpy, _htons, _emscripten_builtin_memalign, _setThrew, _emscripten_stack_set_limits, __emscripten_stack_restore, __emscripten_stack_alloc, _emscripten_stack_get_current, dynCall_viii, dynCall_vii, dynCall_ii, dynCall_vi, dynCall_v, dynCall_iiii, dynCall_iii, dynCall_viiii, dynCall_iiiiii, dynCall_iiiiiii, dynCall_vif, dynCall_viif, dynCall_iiiii, dynCall_fiii, dynCall_fiiiii, dynCall_viiiiif, dynCall_vifffff, dynCall_viiiii, dynCall_viiiiii, dynCall_viiiiiii, dynCall_viiiiiiii, dynCall_fii, dynCall_ji, dynCall_iiif, dynCall_viifi, dynCall_iiiiff, dynCall_iiiiiff, dynCall_vij, dynCall_iij, dynCall_fi, dynCall_iiiiiiiiii, dynCall_iiiiiiii, dynCall_iiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiiiiiii, dynCall_iiiiiiiiiiiii, dynCall_iiiiiiiii, dynCall_iiiifi, dynCall_iijj, dynCall_j, dynCall_iif, dynCall_iid, dynCall_fif, dynCall_jiji, dynCall_iidiiii, dynCall_viijii, dynCall_iiiiij, dynCall_iiiiid, dynCall_iiiiijj, dynCall_iiiiiijj, _asyncify_start_unwind, _asyncify_stop_unwind, _asyncify_start_rewind, _asyncify_stop_rewind;
 
 function assignWasmExports(wasmExports) {
   _free = wasmExports["rc"];
@@ -9428,65 +9433,66 @@ function assignWasmExports(wasmExports) {
   _malloc = wasmExports["tc"];
   _memcpy = wasmExports["uc"];
   _htons = wasmExports["vc"];
-  _setThrew = wasmExports["wc"];
-  _emscripten_stack_set_limits = wasmExports["xc"];
-  __emscripten_stack_restore = wasmExports["yc"];
-  __emscripten_stack_alloc = wasmExports["zc"];
-  _emscripten_stack_get_current = wasmExports["Ac"];
-  dynCalls["viii"] = dynCall_viii = wasmExports["Bc"];
-  dynCalls["vii"] = dynCall_vii = wasmExports["Cc"];
-  dynCalls["ii"] = dynCall_ii = wasmExports["Dc"];
-  dynCalls["vi"] = dynCall_vi = wasmExports["Ec"];
-  dynCalls["v"] = dynCall_v = wasmExports["Fc"];
-  dynCalls["iiii"] = dynCall_iiii = wasmExports["Gc"];
-  dynCalls["iii"] = dynCall_iii = wasmExports["Hc"];
-  dynCalls["viiii"] = dynCall_viiii = wasmExports["Ic"];
-  dynCalls["iiiiii"] = dynCall_iiiiii = wasmExports["Jc"];
-  dynCalls["iiiiiii"] = dynCall_iiiiiii = wasmExports["Kc"];
-  dynCalls["vif"] = dynCall_vif = wasmExports["Lc"];
-  dynCalls["viif"] = dynCall_viif = wasmExports["Mc"];
-  dynCalls["iiiii"] = dynCall_iiiii = wasmExports["Nc"];
-  dynCalls["fiii"] = dynCall_fiii = wasmExports["Oc"];
-  dynCalls["fiiiii"] = dynCall_fiiiii = wasmExports["Pc"];
-  dynCalls["viiiiif"] = dynCall_viiiiif = wasmExports["Qc"];
-  dynCalls["vifffff"] = dynCall_vifffff = wasmExports["Rc"];
-  dynCalls["viiiii"] = dynCall_viiiii = wasmExports["Sc"];
-  dynCalls["viiiiii"] = dynCall_viiiiii = wasmExports["Tc"];
-  dynCalls["viiiiiii"] = dynCall_viiiiiii = wasmExports["Uc"];
-  dynCalls["viiiiiiii"] = dynCall_viiiiiiii = wasmExports["Vc"];
-  dynCalls["fii"] = dynCall_fii = wasmExports["Wc"];
-  dynCalls["ji"] = dynCall_ji = wasmExports["Xc"];
-  dynCalls["iiif"] = dynCall_iiif = wasmExports["Yc"];
-  dynCalls["viifi"] = dynCall_viifi = wasmExports["Zc"];
-  dynCalls["iiiiff"] = dynCall_iiiiff = wasmExports["_c"];
-  dynCalls["iiiiiff"] = dynCall_iiiiiff = wasmExports["$c"];
-  dynCalls["vij"] = dynCall_vij = wasmExports["ad"];
-  dynCalls["iij"] = dynCall_iij = wasmExports["bd"];
-  dynCalls["fi"] = dynCall_fi = wasmExports["cd"];
-  dynCalls["iiiiiiiiii"] = dynCall_iiiiiiiiii = wasmExports["dd"];
-  dynCalls["iiiiiiii"] = dynCall_iiiiiiii = wasmExports["ed"];
-  dynCalls["iiiiiiiiiiii"] = dynCall_iiiiiiiiiiii = wasmExports["fd"];
-  dynCalls["iiiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiiii = wasmExports["gd"];
-  dynCalls["iiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiii = wasmExports["hd"];
-  dynCalls["iiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiii = wasmExports["id"];
-  dynCalls["iiiiiiiii"] = dynCall_iiiiiiiii = wasmExports["jd"];
-  dynCalls["iiiifi"] = dynCall_iiiifi = wasmExports["kd"];
-  dynCalls["iijj"] = dynCall_iijj = wasmExports["ld"];
-  dynCalls["j"] = dynCall_j = wasmExports["md"];
-  dynCalls["iif"] = dynCall_iif = wasmExports["nd"];
-  dynCalls["iid"] = dynCall_iid = wasmExports["od"];
-  dynCalls["fif"] = dynCall_fif = wasmExports["pd"];
-  dynCalls["jiji"] = dynCall_jiji = wasmExports["qd"];
-  dynCalls["iidiiii"] = dynCall_iidiiii = wasmExports["rd"];
-  dynCalls["viijii"] = dynCall_viijii = wasmExports["sd"];
-  dynCalls["iiiiij"] = dynCall_iiiiij = wasmExports["td"];
-  dynCalls["iiiiid"] = dynCall_iiiiid = wasmExports["ud"];
-  dynCalls["iiiiijj"] = dynCall_iiiiijj = wasmExports["vd"];
-  dynCalls["iiiiiijj"] = dynCall_iiiiiijj = wasmExports["wd"];
-  _asyncify_start_unwind = wasmExports["xd"];
-  _asyncify_stop_unwind = wasmExports["yd"];
-  _asyncify_start_rewind = wasmExports["zd"];
-  _asyncify_stop_rewind = wasmExports["Ad"];
+  _emscripten_builtin_memalign = wasmExports["wc"];
+  _setThrew = wasmExports["xc"];
+  _emscripten_stack_set_limits = wasmExports["yc"];
+  __emscripten_stack_restore = wasmExports["zc"];
+  __emscripten_stack_alloc = wasmExports["Ac"];
+  _emscripten_stack_get_current = wasmExports["Bc"];
+  dynCalls["viii"] = dynCall_viii = wasmExports["Cc"];
+  dynCalls["vii"] = dynCall_vii = wasmExports["Dc"];
+  dynCalls["ii"] = dynCall_ii = wasmExports["Ec"];
+  dynCalls["vi"] = dynCall_vi = wasmExports["Fc"];
+  dynCalls["v"] = dynCall_v = wasmExports["Gc"];
+  dynCalls["iiii"] = dynCall_iiii = wasmExports["Hc"];
+  dynCalls["iii"] = dynCall_iii = wasmExports["Ic"];
+  dynCalls["viiii"] = dynCall_viiii = wasmExports["Jc"];
+  dynCalls["iiiiii"] = dynCall_iiiiii = wasmExports["Kc"];
+  dynCalls["iiiiiii"] = dynCall_iiiiiii = wasmExports["Lc"];
+  dynCalls["vif"] = dynCall_vif = wasmExports["Mc"];
+  dynCalls["viif"] = dynCall_viif = wasmExports["Nc"];
+  dynCalls["iiiii"] = dynCall_iiiii = wasmExports["Oc"];
+  dynCalls["fiii"] = dynCall_fiii = wasmExports["Pc"];
+  dynCalls["fiiiii"] = dynCall_fiiiii = wasmExports["Qc"];
+  dynCalls["viiiiif"] = dynCall_viiiiif = wasmExports["Rc"];
+  dynCalls["vifffff"] = dynCall_vifffff = wasmExports["Sc"];
+  dynCalls["viiiii"] = dynCall_viiiii = wasmExports["Tc"];
+  dynCalls["viiiiii"] = dynCall_viiiiii = wasmExports["Uc"];
+  dynCalls["viiiiiii"] = dynCall_viiiiiii = wasmExports["Vc"];
+  dynCalls["viiiiiiii"] = dynCall_viiiiiiii = wasmExports["Wc"];
+  dynCalls["fii"] = dynCall_fii = wasmExports["Xc"];
+  dynCalls["ji"] = dynCall_ji = wasmExports["Yc"];
+  dynCalls["iiif"] = dynCall_iiif = wasmExports["Zc"];
+  dynCalls["viifi"] = dynCall_viifi = wasmExports["_c"];
+  dynCalls["iiiiff"] = dynCall_iiiiff = wasmExports["$c"];
+  dynCalls["iiiiiff"] = dynCall_iiiiiff = wasmExports["ad"];
+  dynCalls["vij"] = dynCall_vij = wasmExports["bd"];
+  dynCalls["iij"] = dynCall_iij = wasmExports["cd"];
+  dynCalls["fi"] = dynCall_fi = wasmExports["dd"];
+  dynCalls["iiiiiiiiii"] = dynCall_iiiiiiiiii = wasmExports["ed"];
+  dynCalls["iiiiiiii"] = dynCall_iiiiiiii = wasmExports["fd"];
+  dynCalls["iiiiiiiiiiii"] = dynCall_iiiiiiiiiiii = wasmExports["gd"];
+  dynCalls["iiiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiiii = wasmExports["hd"];
+  dynCalls["iiiiiiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiiiiiii = wasmExports["id"];
+  dynCalls["iiiiiiiiiiiii"] = dynCall_iiiiiiiiiiiii = wasmExports["jd"];
+  dynCalls["iiiiiiiii"] = dynCall_iiiiiiiii = wasmExports["kd"];
+  dynCalls["iiiifi"] = dynCall_iiiifi = wasmExports["ld"];
+  dynCalls["iijj"] = dynCall_iijj = wasmExports["md"];
+  dynCalls["j"] = dynCall_j = wasmExports["nd"];
+  dynCalls["iif"] = dynCall_iif = wasmExports["od"];
+  dynCalls["iid"] = dynCall_iid = wasmExports["pd"];
+  dynCalls["fif"] = dynCall_fif = wasmExports["qd"];
+  dynCalls["jiji"] = dynCall_jiji = wasmExports["rd"];
+  dynCalls["iidiiii"] = dynCall_iidiiii = wasmExports["sd"];
+  dynCalls["viijii"] = dynCall_viijii = wasmExports["td"];
+  dynCalls["iiiiij"] = dynCall_iiiiij = wasmExports["ud"];
+  dynCalls["iiiiid"] = dynCall_iiiiid = wasmExports["vd"];
+  dynCalls["iiiiijj"] = dynCall_iiiiijj = wasmExports["wd"];
+  dynCalls["iiiiiijj"] = dynCall_iiiiiijj = wasmExports["xd"];
+  _asyncify_start_unwind = wasmExports["yd"];
+  _asyncify_stop_unwind = wasmExports["zd"];
+  _asyncify_start_rewind = wasmExports["Ad"];
+  _asyncify_stop_rewind = wasmExports["Bd"];
 }
 
 var wasmImports = {
