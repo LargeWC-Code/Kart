@@ -66,24 +66,6 @@ public:
 	}
 };
 
-struct UCCarPhyInfo
-{
-	ucINT			FPS;
-	uc3dxVector3	Pos;
-	ucFLOAT			RotY;
-	UCCarPhyInfo()
-	{
-		FPS = 0;
-		Pos = uc3dxVector3(0.0f, 0.0f, 0.0f);
-		RotY = 0.0f;
-	}
-	UCCarPhyInfo(ucCONST UCCarPhyInfo& CarPhyInfo)
-	{
-		FPS = CarPhyInfo.FPS;
-		Pos = CarPhyInfo.Pos;
-		RotY = CarPhyInfo.RotY;
-	}
-};
 class UCCarPhysics
 {
 public:
@@ -177,7 +159,7 @@ public:
 	ucINT					KeyR;							//右键按下
 	ucINT					KeyD;							//下键按下
 
-	UCEArray<UCCarPhyInfo>	AryPhyInfo;
+	UCEArray<UCRGameUserPhyInfoFrame>	AryPhyInfoFrames;
 
 	~UCCarPhysics()
 	{

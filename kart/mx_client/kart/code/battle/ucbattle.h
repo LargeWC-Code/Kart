@@ -43,7 +43,7 @@ private:
 	UCFiber			FiberSyncSend;
 	UCFiber			FiberGame;
 
-	UCEList<UCSyncData>	ListSyncData;
+	UCRGameUserPhyInfo	RGameUserPhyInfo;
 
 	UCButton		BT_Exit;
 	UCTextBox		TB_Position;
@@ -110,7 +110,6 @@ public:
 		UCRPropertyArgs* Args = (UCRPropertyArgs*)e;
 
 		ucINT Index = RObjGameBattle->UserPubInfo[0].GetArrayIndex(Args->Data);
-
 		if (RObjGameBattle->UserPubInfo[Index].GameUserID.Value == -1 && Index == SeatID)
 			OnExit.RunNew(this, ucNULL);
 	}
@@ -330,13 +329,12 @@ public:
 		if (Human == ucNULL || Human->Physics.IsSelf)
 			return;
 
+		// 同步处理
+
 		UCRGameUserPhyInfo* UserPhyInfo = &(RObjGameBattle->UserPhyInfo[ArrayIndex]);
 
-		UCCarPhyInfo CarPhyInfo;
-		CarPhyInfo.Pos = UserPhyInfo->Pos;
-		CarPhyInfo.RotY = UserPhyInfo->RotY;
-		CarPhyInfo.FPS = UserPhyInfo->FPS;
-		Human->Physics.AryPhyInfo.Add(CarPhyInfo);
+		for (ucINT i = 0; i < 8; i++)
+			Human->Physics.AryPhyInfoFrames.Add(UserPhyInfo->RGameUserPhyInfoFrame[i]);
 	}
 	ucVOID OnFiberSyncSend(UCObject* Sender, UCEventArgs* e)
 	{
@@ -344,15 +342,10 @@ public:
 
 		while (FiberData->IsValid())
 		{
-			if (ListSyncData.GetCount() >= 2)
-			{
-				UCSyncData SyncData1 = ListSyncData.GetHead();	ListSyncData.RemoveAt(ListSyncData.GetHeadPosition());
-				UCSyncData SyncData2 = ListSyncData.GetHead();	ListSyncData.RemoveAt(ListSyncData.GetHeadPosition());
+			// 利用Sync同步Tick
+			UCString strRet = RObjGameBattle->Sync(GameUserID, Token, RGameUserPhyInfo);
 
-				UCString strRet = RObjGameBattle->Sync(GameUserID, Token, SyncData1.Pos, SyncData1.RotY,
-					SyncData2.Pos, SyncData2.RotY);
-			}
-			FiberData->SyncTick(2);
+			FiberData->SyncTick(7);
 		}
 	}
 	ucVOID OnFiberSync(UCObject* Sender, UCEventArgs* e)
@@ -367,12 +360,22 @@ public:
 		}
 
 		ucINT			FPS = 0;
-		ucINT			PART = 4;
 		while (FiberData->IsValid())
 		{
-			UCSyncData& SyncData = ListSyncData.NewHead();
-			SyncData.Pos = Map->Self->Physics.Center.Pos.Value();
-			SyncData.RotY = Map->Self->Physics.CenterBody.Rot.y.Value;
+			ucINT ID = FPS % 8;
+
+			for (ucINT i = ID; i < 8; i++)
+			{
+				uc3dxVector3 Pos = Map->Self->Physics.Center.Pos.Value();
+				// 捕捉自己的坐标
+				UCRGameUserPhyInfoFrame& PhyInfoFrame = RGameUserPhyInfo.RGameUserPhyInfoFrame[i];
+				PhyInfoFrame.FPS = FPS;
+				PhyInfoFrame.PosX = Pos.x;
+				PhyInfoFrame.PosY = Pos.y;
+				PhyInfoFrame.PosZ = Pos.z;
+				PhyInfoFrame.RotY = Map->Self->Physics.CenterBody.Rot.y.Value;
+			}
+
 			FPS++;
 
 			//RObjGameBattle->RContainer->Log(VTOS(SyncData.Pos) + UCString("\r\n"));
@@ -384,43 +387,29 @@ public:
 				if (Human == ucNULL || Human->Physics.IsSelf)
 					continue;
 
-				if (Human->Physics.AryPhyInfo.GetSize() > 2)
+				if (Human->Physics.AryPhyInfoFrames.GetSize())
 				{
-					ucINT CacheMax = 10000;
-					if (Human->Physics.AryPhyInfo.GetSize() > CacheMax)
+					ucINT CacheMax = 20;
+					if (Human->Physics.AryPhyInfoFrames.GetSize() > CacheMax)
 					{
-						UCCarPhyInfo& CarPhyInfo = Human->Physics.AryPhyInfo.GetAt(Human->Physics.AryPhyInfo.GetSize() - 1);
-						Human->Physics.Center.Pos = CarPhyInfo.Pos;
-						Human->Physics.CenterBody.Rot.y = CarPhyInfo.RotY;
-						Human->Physics.AryPhyInfo.RemoveAll();
+						ucINT Pos = Human->Physics.AryPhyInfoFrames.GetSize() - CacheMax;
+						for (ucINT o = 0; o < Pos; o++)
+							Human->Physics.AryPhyInfoFrames.RemoveAt(0);
 					}
-					else
-					{
-						UCCarPhyInfo& CarPhyInfo = Human->Physics.AryPhyInfo.GetAt(0);
+					UCRGameUserPhyInfoFrame& PhyInfoFrame = Human->Physics.AryPhyInfoFrames[0];
+					Human->Physics.AryPhyInfoFrames.RemoveAt(0);
 
-						ucINT FPSPart = (FPS % PART);
-						ucFLOAT Tick = 4.0f - FPSPart;
-						if (FPSPart < (PART - 1))
-						{
-							Human->Physics.Center.Pos = Human->Physics.Center.Pos.Value() + (CarPhyInfo.Pos - Human->Physics.Center.Pos.Value()) / Tick;
-							Human->Physics.CenterBody.Rot.y = Human->Physics.CenterBody.Rot.y.Value + (CarPhyInfo.RotY - Human->Physics.CenterBody.Rot.y.Value) / Tick;
-						}
-						else
-						{
-							Human->Physics.Center.Pos = CarPhyInfo.Pos;
-							Human->Physics.CenterBody.Rot.y = CarPhyInfo.RotY;
-							Human->Physics.AryPhyInfo.RemoveAt(0);
-						}
-					}
+					Human->Physics.Center.Pos = uc3dxVector3(PhyInfoFrame.PosX, PhyInfoFrame.PosY, PhyInfoFrame.PosZ);
+					Human->Physics.CenterBody.Rot.y = PhyInfoFrame.RotY;
 
-					TB_Position.Text = ITOS(Human->Physics.AryPhyInfo.GetSize()) + UCString(" = ") + VTOS(Human->Physics.Center.Pos.Value());
+					TB_Position.Text = ITOS(Human->Physics.AryPhyInfoFrames.GetSize()) + UCString(" = ") + VTOS(Human->Physics.Center.Pos.Value());
 				}
 			}
 
 			//ShadowTex->Center.Pos = Map->Self->Physics.Center.Pos.Value();
 
 			//每秒10个包
-			FiberData->SyncTick(8);
+			FiberData->SyncTick(1);
 		}
 	}
 	ucVOID OnFiberGame(UCObject* Sender, UCEventArgs* e)
@@ -442,10 +431,12 @@ public:
 
 		RObjGameBattle->StartGame(GameUserID, Token);
 
-		if (RObjGameBattle->GameBattle_MatchInfo.State.Value == BATTLE_STATE_GAMING)
+		UCRGameUserPhyInfoFrame& RGameUserPhyInfoFrame = RObjGameBattle->UserPhyInfo[SeatID].RGameUserPhyInfoFrame[0];
+
+		if (RGameUserPhyInfoFrame.FPS > 0)
 		{
-			Map->Self->Physics.Center.Pos = RObjGameBattle->UserPhyInfo[SeatID].Pos;
-			Map->Self->Physics.Center.Rot.y = RObjGameBattle->UserPhyInfo[SeatID].RotY;
+			Map->Self->Physics.Center.Pos = uc3dxVector3(RGameUserPhyInfoFrame.PosX, RGameUserPhyInfoFrame.PosY, RGameUserPhyInfoFrame.PosZ);
+			Map->Self->Physics.Center.Rot.y = RGameUserPhyInfoFrame.RotY;
 		}
 
 		FiberSync.Run(0);

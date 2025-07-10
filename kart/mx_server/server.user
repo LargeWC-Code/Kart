@@ -2,24 +2,26 @@
 <_xml_data Type='UCSolutionUser'> 
 	<mapOpenFile Type='UCStringIntMap'> 
 		<Key0 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\home\ucstoremanagement.h</Key0> 
-		<Value0 Type='int'>27</Value0> 
+		<Value0 Type='int'>1</Value0> 
 		<Key1 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\home\ucusermanagement.h</Key1> 
 		<Value1 Type='int'>1</Value1> 
 		<Key2 Type='UCString'>H:\MIT\assignment\kart\develop\mx_client\kart\code\login\uclogin.h</Key2> 
 		<Value2 Type='int'>1</Value2> 
-		<Key3 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\home\uchome.h</Key3> 
+		<Key3 Type='UCString'>H:\MIT\assignment\kart\develop\mx_server\container\private\common\game_logicbase.h</Key3> 
 		<Value3 Type='int'>1</Value3> 
-		<Key4 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\login\ucregister.h</Key4> 
+		<Key4 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\home\uchome.h</Key4> 
 		<Value4 Type='int'>1</Value4> 
-		<Key5 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\player\avatar.h</Key5> 
+		<Key5 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\login\ucregister.h</Key5> 
 		<Value5 Type='int'>1</Value5> 
-		<Key6 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\kart.h</Key6> 
+		<Key6 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\code\player\avatar.h</Key6> 
 		<Value6 Type='int'>1</Value6> 
-		<Key7 Type='UCString'>h:\root\magicx\games\kart\develop\mx_client\kart\code\battle\map\mapbase.h</Key7> 
+		<Key7 Type='UCString'>h:\mit\assignment\kart\develop\mx_client\kart\kart.h</Key7> 
 		<Value7 Type='int'>1</Value7> 
-		<Key8 Type='UCString'>h:\root\magicx\games\kart\develop\mx_client\kart\code\battle\ucbattle.h</Key8> 
-		<Value8 Type='int'>1</Value8>
-		9
+		<Key8 Type='UCString'>h:\root\magicx\games\kart\develop\mx_client\kart\code\battle\map\mapbase.h</Key8> 
+		<Value8 Type='int'>1</Value8> 
+		<Key9 Type='UCString'>h:\root\magicx\games\kart\develop\mx_client\kart\code\battle\ucbattle.h</Key9> 
+		<Value9 Type='int'>1</Value9>
+		10
 	</mapOpenFile> 
 	<mapBookmark Type='UCBookmarkMap'>0</mapBookmark> 
 	<mapProjectUser Type='UCProjectUserMap'> 

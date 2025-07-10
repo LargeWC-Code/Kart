@@ -66,7 +66,7 @@ public:
 	{
 		UCPortal* Portal = Manage.PortalAt(-1);
 		uc3dxVector3	Up(0.0f, 1.0f, 0.0f);
-		uc3dxVector3	Pos = Portal->Center - Up * 506.8f;//536.8f;
+		uc3dxVector3	Pos = Portal->Center - Up * 536.8f;//536.8f;
 		uc3dxVector3	Lft = Portal->Normal % Up;
 
 		ucINT MaxPerson = 0;
@@ -96,7 +96,7 @@ public:
 			{
 				if (k / 4 == 0)
 				{
-					ucFLOAT f = 100.0f * (k)-StartX1;
+					ucFLOAT f = 160.0f * (k) - StartX1;
 					Human->Physics.PortalObject.Locate(-1);
 					Human->Physics.SetPosition(Pos + Lft * f - Portal->Normal * 10.0f);
 					Human->Physics.PlayAction(0);
@@ -104,7 +104,7 @@ public:
 				}
 				else
 				{
-					ucFLOAT f = 100.0f * (k - 4) - StartX2;
+					ucFLOAT f = 160.0f * (k - 4) - StartX2;
 					Human->Physics.PortalObject.Locate(-1);
 					Human->Physics.SetPosition(Pos + Lft * f - Portal->Normal * 100.0f);
 					Human->Physics.PlayAction(0);

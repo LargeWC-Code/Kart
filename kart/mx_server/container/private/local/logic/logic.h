@@ -17,6 +17,7 @@ struct UCGameLogicInfo
 
 class UCRObjGameUserData_Logic : public UCRObjGameUserData
 {
+public:
 	ucDWORD							DataLife;
 public:
 	UCRObjGameUserData_Ext			RObjGameUserData_Ext;
@@ -113,29 +114,21 @@ private:
 public:
 	UCString				StartGame(ucCONST UCGameUserID& GameUserID, ucUINT64 Token)
 	{
-		FiberGame.Run(0);
+		FiberGame.Start(0);
 		return UCString("succeed");
 	}
 
-	UCString				Sync(ucCONST UCGameUserID& GameUserID, ucUINT64 Token,
-		ucCONST uc3dxVector3& Pos0, ucFLOAT RotY0,
-		ucCONST uc3dxVector3& Pos1, ucFLOAT RotY1)
+	UCString				Sync(ucCONST UCGameUserID& GameUserID, ucUINT64 Token, ucCONST UCRGameUserPhyInfo& RGameUserPhyInfo)
 	{
 		ucINT Pos = MapRObjGameUserData_Logic.FindKey(GameUserID.ID);
 		if (Pos < 0)
 			return UCString("无效用户");
 
 		UCRObjGameUserData_Logic* RObjGameUserData = MapRObjGameUserData_Logic.GetValueAt(Pos);
-	
-		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].Pos = Pos0;
-		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].RotY = RotY0;
+		for (ucINT i = 0; i < 8; i++)
+			UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].RGameUserPhyInfoFrame[i] = RGameUserPhyInfo.RGameUserPhyInfoFrame[i];
 		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].Commit();
 
-		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].Pos = Pos1;
-		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].RotY = RotY1;
-		UserPhyInfo[RObjGameUserData->RGameUserPubInfo.SeatID.Value].Commit();
-
-		RContainer->Log(ITOS(RObjGameUserData->RGameUserPubInfo.SeatID.Value) + UCString(":") + VTOS(Pos0) + UCString(":") + VTOS(Pos1) + UCString("\r\n"));
 		return UCString("succeed");
 	}
 
@@ -167,7 +160,6 @@ private:
 			FiberData->Every(10000);
 		}
 	}
-
 public:
 	UCString Join(ucCONST UCGameUserID& GameUserID, UCRObjGameUserData_Logic** ppRObjGameUserData_Logic)
 	{

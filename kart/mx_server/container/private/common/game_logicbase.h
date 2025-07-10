@@ -33,28 +33,40 @@ public:
 	}
 };
 
-/*
-* 玩家物理数据
-*/
-struct UCRGameUserPhyInfo : public UCRProData
+struct UCRGameUserPhyInfoFrame : UCRProData
 {
 	ucINT				FPS;
-	uc3dxVector3		Pos;
+	ucFLOAT				PosX;
+	ucFLOAT				PosY;
+	ucFLOAT				PosZ;
 	ucFLOAT				RotY;
 	ucVOID	Clear()
 	{
 		FPS = 0;
-		Pos = uc3dxVector3(0.0f, 0.0f, 0.0f);
+		PosX = 0.0f;
+		PosY = 0.0f;
+		PosZ = 0.0f;
 		RotY = 0.0f;
+	}
+};
+/*
+* 玩家物理数据 - 单帧
+*/
+struct UCRGameUserPhyInfo : public UCRProData
+{
+	UCRGameUserPhyInfoFrame				RGameUserPhyInfoFrame[8];
+	ucVOID	Clear()
+	{
+		for (ucINT i = 0; i < 8; i++)
+			RGameUserPhyInfoFrame[i].Clear();
 	}
 };
 
 class UCRObjGameUserPhyInfo : public UCRObject
 {
 public:
-	UCRInt64				GameUserID;
-	UCRGameUserPhyInfo		PhyInfo0;
-	UCRGameUserPhyInfo		PhyInfo1;
+	UCRInt64							GameUserID;
+	UCRGameUserPhyInfoFrame				RGameUserPhyInfoFrame[8];
 };
 
 enum BATTLE_TYPE
@@ -129,9 +141,7 @@ public:
 		return UCString("local");
 	}
 
-	UCString				Sync(ucCONST UCGameUserID& GameUserID, ucUINT64 Token,
-		ucCONST uc3dxVector3& Pos0, ucFLOAT RotY0,
-		ucCONST uc3dxVector3& Pos1, ucFLOAT RotY1)
+	UCString				Sync(ucCONST UCGameUserID& GameUserID, ucUINT64 Token, ucCONST UCRGameUserPhyInfo& RGameUserPhyInfo)
 	{
 		return UCString("local");
 	}
