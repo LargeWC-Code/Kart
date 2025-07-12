@@ -19,6 +19,7 @@
 class UCHome : public UCHome_UI
 {
 public:
+	ucINT					GameMode;
 	UCEvent					OnLogout;
 	UCEvent					OnMatchSucceed;
 public:
@@ -51,6 +52,7 @@ public:
 		UCRObjGameUserData* RObjGameUserData,
 		UCRObjGameUserData_Ext* RObjGameUserData_Ext)	//构造函数
 	{
+		GameMode = 1;
 		//默认不可见
 		Visible = ucFALSE;
 		Enable = ucFALSE;
@@ -77,6 +79,8 @@ public:
 		FiberKeepAlive.Run(0);
 
 		m_btTrain.OnClick = UCEvent(this, OnTrainClick);
+		m_btMatch.OnClick = UCEvent(this, OnMatchClick);
+
 		m_btProfile.OnClick = UCEvent(this, OnProfileClick);
 		m_btShop.OnClick = UCEvent(this, OnShopClick);
 		m_btInventory.OnClick = UCEvent(this, OnInventoryClick);
@@ -163,6 +167,12 @@ public:
 	}
 	ucVOID OnTrainClick(UCObject* Object, UCEventArgs* Args)
 	{
+		Visible = ucFALSE;
+		GameMode = 0;
+		OnMatchSucceed(this, 0);
+	}
+	ucVOID OnMatchClick(UCObject* Object, UCEventArgs* Args)
+	{
 		UCString strResult = RObjGameMatch->Match(GameUserID, Token);
 
 		if (!RObjGameMatch->Linked)
@@ -243,11 +253,36 @@ public:
 			FiberData->Every(1000);
 		}
 
+		GameMode = 1;
 		OnMatchSucceed(this, 0);
 	}
 	ucVOID OnProfileClick(UCObject* Object, UCEventArgs* Args)
 	{
+		UCTimeFiberData* FiberData = (UCTimeFiberData*)GetRunFiberData();
+
+		m_pProfile->m_tbUsername.Text = RObjGameUserData->Username.Value;
+		m_pProfile->m_tbNickname.Text = RObjGameUserData->Nickname.Value;
+		m_pProfile->m_tbEmail.Text = RObjGameUserData->Email.Value;
+
 		m_pProfile->ShowUI();
+
+		while (m_pProfile->Visible.Value)
+			FiberData->Delay(1000);
+
+		if (m_pProfile->Confirmed)
+		{
+			RObjGameHome->ChangeProfile(GameUserID, Token,
+				m_pProfile->m_tbPassword.Text.Value,
+				m_pProfile->m_tbNickname.Text.Value,
+				m_pProfile->m_tbEmail.Text.Value);
+
+			RObjGameUserData->Update();
+
+			if (RObjGameUserData->Nickname.Value.IsEmpty())
+				m_lbNickname.Text = RObjGameUserData->Username.Value;
+			else
+				m_lbNickname.Text = RObjGameUserData->Nickname.Value;
+		}
 	}
 	ucVOID OnUserManagementClick(UCObject* Object, UCEventArgs* Args)
 	{
