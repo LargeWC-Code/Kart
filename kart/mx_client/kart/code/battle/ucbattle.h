@@ -26,6 +26,7 @@ struct UCSyncData
 class UCBattle : public UCBattle_UI
 {
 public:
+	ucINT			GameMode;
 	UCEventManager	OnExit;
 private:
 	UCGameUserID	GameUserID;
@@ -54,6 +55,7 @@ private:
 public:
 	UCBattle(UCRObjGameBattle* RObjGameBattle)	//构造函数
 	{
+		GameMode = 0;
 		MapID = 1;
 		Map = ucNULL;
 
@@ -115,11 +117,19 @@ public:
 	}
 	ucVOID OnBT_ExitClick(UCObject*, UCEventArgs*)
 	{
-		RObjGameBattle->ExitGame(GameUserID, Token);
+		if (GameMode == 0)
+			OnExit.RunNew(this, ucNULL);
+		if (GameMode == 1)
+			RObjGameBattle->ExitGame(GameUserID, Token);
 	}
 	ucVOID InitUser(UCKartMap* KartMap)
 	{
-		for (ucINT i = 0; i < BATTLE_USER_MAX && i < MAX_USER; i++)
+		ucINT MaxUser = BATTLE_USER_MAX;
+		if (MaxUser > MAX_USER)
+			MaxUser = MAX_USER;
+		if (GameMode == 0)
+			MaxUser = 1;
+		for (ucINT i = 0; i < MaxUser; i++)
 		{
 			UCRGameUserPubInfo& UserPubInfo = RObjGameBattle->UserPubInfo[i];
 			if (UserPubInfo.GameUserID.Value == -1)
@@ -166,7 +176,7 @@ public:
 
 			Human->Init(this, &Map->Manage);
 
-			if (GameUserID.ID == UserPubInfo.GameUserID.Value)
+			if (GameMode == 0 || GameUserID.ID == UserPubInfo.GameUserID.Value)
 			{
 				SeatID = i;
 				Map->Self = Map->Users[i];
@@ -177,6 +187,7 @@ public:
 				Human->Physics.Center.Enable = 0;
 			Human->Physics.State.SetParentFiber(&FiberGame);
 		}
+
 
 		//启动飘逸Fiber
 		FiberGame.AddChild(&Map->Self->Physics.FiberDrift);
@@ -416,8 +427,11 @@ public:
 	{
 		UCTimeFiberData* FiberData = (UCTimeFiberData*)Sender;
 
-		for (ucINT i = 0; i < BATTLE_USER_MAX; i++)
-			RObjGameBattle->UserPubInfo[i].GameUserID.AppendEvent(UCEvent(this, UserPubInfoGameUserID_OnSet));
+		if (GameMode == 1)
+		{
+			for (ucINT i = 0; i < BATTLE_USER_MAX; i++)
+				RObjGameBattle->UserPubInfo[i].GameUserID.AppendEvent(UCEvent(this, UserPubInfoGameUserID_OnSet));
+		}
 
 		if (FiberData)
 		{
@@ -429,30 +443,44 @@ public:
 
 		UCDevice3D* pDevice = UIGetDevice3D();
 
-		RObjGameBattle->StartGame(GameUserID, Token);
-
-		UCRGameUserPhyInfoFrame& RGameUserPhyInfoFrame = RObjGameBattle->UserPhyInfo[SeatID].RGameUserPhyInfoFrame[0];
-
-		if (RGameUserPhyInfoFrame.FPS > 0)
+		if (GameMode == 1)
 		{
-			Map->Self->Physics.Center.Pos = uc3dxVector3(RGameUserPhyInfoFrame.PosX, RGameUserPhyInfoFrame.PosY, RGameUserPhyInfoFrame.PosZ);
-			Map->Self->Physics.Center.Rot.y = RGameUserPhyInfoFrame.RotY;
+			RObjGameBattle->StartGame(GameUserID, Token);
+
+			UCRGameUserPhyInfoFrame& RGameUserPhyInfoFrame = RObjGameBattle->UserPhyInfo[SeatID].RGameUserPhyInfoFrame[0];
+
+			if (RGameUserPhyInfoFrame.FPS > 0)
+			{
+				Map->Self->Physics.Center.Pos = uc3dxVector3(RGameUserPhyInfoFrame.PosX, RGameUserPhyInfoFrame.PosY, RGameUserPhyInfoFrame.PosZ);
+				Map->Self->Physics.Center.Rot.y = RGameUserPhyInfoFrame.RotY;
+			}
+
+			FiberSync.Run(0);
+			FiberSyncSend.Run(0);
+
+			LB_Time.Visible = ucTRUE;
+
+			if (RObjGameBattle->GameBattle_MatchInfo.State.Value == BATTLE_STATE_READY)
+			{
+				for (ucINT i = RObjGameBattle->LeastTime.Value - 1; i >= 0; i--)
+				{
+					LB_Time.Text = ITOS(i);
+					FiberData->Every(10000);
+				}
+			}
+			LB_Time.Visible = ucFALSE;
 		}
-
-		FiberSync.Run(0);
-		FiberSyncSend.Run(0);
-
-		LB_Time.Visible = ucTRUE;
-
-		if (RObjGameBattle->GameBattle_MatchInfo.State.Value == BATTLE_STATE_READY)
+		else
 		{
-			for (ucINT i = RObjGameBattle->LeastTime.Value - 1; i >= 0; i--)
+			LB_Time.Visible = ucTRUE;
+
+			for (ucINT i = 5; i >= 0; i--)
 			{
 				LB_Time.Text = ITOS(i);
 				FiberData->Every(10000);
 			}
+			LB_Time.Visible = ucFALSE;
 		}
-		LB_Time.Visible = ucFALSE;
 
 		Map->Self->Physics.Center.AngularVel = uc3dxVector3(0.0f, 0.0f, 0.0f);
 		Map->Self->Physics.Center.LinearVel = uc3dxVector3(0.0f, 0.0f, 0.0f);

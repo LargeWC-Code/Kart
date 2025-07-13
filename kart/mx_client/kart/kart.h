@@ -248,13 +248,17 @@ public:
 	}
 	ucVOID OnMatchSucceed(UCObject*, UCEventArgs*)
 	{
-		ucINT Code = RObjGameBattle.Link(GateUrl + UCString("//sm://logic:") +
-			ITOS(RObjGameUserData_Ext.BattleInfo.LogicID) + UCString("//UCRObjGameBattle/") +
-			ITOS(RObjGameUserData_Ext.BattleInfo.BattleID) + UCString(".obj"));
-		if (Code != 0)
+		m_pBattle->GameMode = m_pHome->GameMode;
+		if (m_pBattle->GameMode == 1)
 		{
-			WBox(UCString("Battle_RCObj Link失败，错误 = ") + ITOS(Code));
-			return;
+			ucINT Code = RObjGameBattle.Link(GateUrl + UCString("//sm://logic:") +
+				ITOS(RObjGameUserData_Ext.BattleInfo.LogicID) + UCString("//UCRObjGameBattle/") +
+				ITOS(RObjGameUserData_Ext.BattleInfo.BattleID) + UCString(".obj"));
+			if (Code != 0)
+			{
+				WBox(UCString("Battle_RCObj Link失败，错误 = ") + ITOS(Code));
+				return;
+			}
 		}
 
 		m_pHome->HideUI();
